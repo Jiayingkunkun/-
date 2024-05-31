@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>新闻详情</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/font-awesome.css" rel="stylesheet">
+  <link href="../css/basic.css" rel="stylesheet">
+  <link href="../css/custom.css" rel="stylesheet">
+  <link href="../css/my.css" rel="stylesheet">
+  <link href="../css/element/index.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/index.css">
+  <style>
+    [v-cloak]{
+      display: none;
+    }
+    body {
+      position: relative;
+      padding-bottom: 120px; /* 为点赞和浏览量预留空间 */
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+    #news-detail {
+      text-align: left;
+      max-width: 80vw;
+      overflow-y: auto;
+      padding: 20px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    #news-detail img {
+      max-width: 100%;
+      height: auto;
+    }
+    #news-detail p {
+      max-width: 80ch;
+      margin: 0 auto;
+      overflow-wrap: break-word;
+    }
+    /* 返回按钮样式 */
+    .fixed-bar {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 9999;
+      padding: 15px 30px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      font-size: 1.2em;
+    }
+    .fixed-bar:hover {
+      background-color: #555;
+    }
+    /* 浏览量和点赞样式 */
+    .view-like-count {
+      position: relative;
+      margin-top: 10px;
+      font-size: 26px; /* Increase font size */
+      color: #4ba6e8; /* Change color to red */
+    }
+    .view-like-count span {
+      margin-right: 10px;
+    }
+    .view-like-count i {
+      margin-right: 5px;
+      font-size: 1.5em;
+    }
+    /* 点赞按钮样式 */
+    #like-button {
+      margin-top: 20px;
+      padding: 15px 30px;
+      background-color: #2965a1;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 1.2em;
+    }
+    #like-button:hover {
+      background-color: #982052;
+    }
+    /* 点赞成功提示样式 */
+    #like-success-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(45, 121, 183, 0.77);
+      color: #ece0e0;
+      padding: 20px; /* 减小内边距 */
+      border-radius: 10px;
+      display: none;
+      z-index: 9999;
+      font-size: 30px; /* 放大字体大小 */
+    }
+  </style>
+</head>
+<body>
+
+<!-- 返回按钮 -->
+<button class="fixed-bar" onclick="app.goBack()">返回</button>
+
+<div id="app">
+  <div id="news-detail">
+    <h3>{{ news.title }}</h3>
+    <div class="view-like-count">
+      <span><i class="fa fa-eye"></i> 浏览量：{{ click }}</span>
+      <span><i class="fa fa-thumbs-up"></i> 点赞数：{{ likes }}</span>
+    </div>
+    <p>{{ news.description }}</p>
+    <div v-html="newsContent"></div>
+    <button id="like-button" @click="likeNews"><i class="fa fa-thumbs-up"></i> 点赞</button>
+  </div>
+</div>
+
+<!-- 点赞成功提示 -->
+<div id="like-success-message">点赞成功</div>
+
+
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.metisMenu.js"></script>
+<script src="../js/custom.js"></script>
+<script src="../js/my.js"></script>
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+<script src="../js/echarts.min.js"></script>
+<script src="../js/element/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script> <!-- 引入 Font Awesome 图标库 -->
+<script>
+  const app = new Vue({
+    el: '#app',
+    data: {
+      news: {}, // 存储新闻数据
+      newsContent: '', // 存储新闻内容
+      likes: null, // 初始值为null
+      click: null, // 初始值为null
+      userId: localStorage.getItem('userId') // 获取 userId
+    },
+    mounted: function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const newsId = urlParams.get('id');
+      // 获取点赞数
+      axios.get(`/news/${newsId}/likeCount`)
+              .then(response => {
+                this.likes = response.data; // 更新点赞数
+              })
+              .catch(error => {
+                console.error('获取点赞数失败：', error);
+              });
+
+      // 获取浏览数
+      axios.get(`/news/${newsId}/clickCount`)
+              .then(response => {
+                this.click = response.data; // 更新浏览数
+              })
+              .catch(error => {
+                console.error('获取浏览数失败：', error);
+              });
+
+      // 获取新闻详情
+      axios.get(`/news/title-and-content/${newsId}`)
+              .then(response => {
+                if (response.data.code === '1009') {
+                  console.error('获取新闻详情失败：找不到对应的新闻记录');
+                } else {
+                  if (response.data.data && response.data.data.content) {
+                    this.newsContent = response.data.data.content;
+                  } else {
+                    console.error('获取新闻详情失败：返回的数据不完整或为空');
+                  }
+                }
+              })
+              .catch(error => {
+                console.error('获取新闻详情失败：', error);
+              });
+
+      // 获取新闻数据（假设news数据从服务器获取）
+      axios.get(`/news/${newsId}`)
+              .then(response => {
+                this.news = response.data; // 更新新闻数据
+              })
+              .catch(error => {
+                console.error('获取新闻数据失败：', error);
+              });
+
+    },
+    methods: {
+      likeNews: function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const newsId = urlParams.get('id');
+        console.log("Sending like request for news ID: ", newsId); // 添加调试语句
+        console.log("User ID: ", this.userId); // 添加调试语句
+        axios.post(`/news/${newsId}/like`, { userId: this.userId }) // 将 userId 作为参数传递给后端
+                .then(response => {
+                  console.log("Like response: ", response); // 添加调试语句
+                  console.log("Like response data: ", response.data); // 添加调试语句
+                  if (response.data === 'Liked successfully') {
+                    this.likes++; // 更新点赞数
+                    // 显示点赞成功提示
+                    document.getElementById('like-success-message').style.display = 'block';
+                    // 2秒后隐藏提示
+                    setTimeout(function() {
+                      document.getElementById('like-success-message').style.display = 'none';
+                    }, 2000);
+                  } else {
+                    console.error('点赞失败：', '未知错误');
+                  }
+                })
+                .catch(error => {
+                  console.error('点赞失败：', error);
+                });
+      },
+      recordClick: function(userId, newsId) {
+        console.log("Recording click for user ID: ", userId, " and news ID: ", newsId);
+
+        // 创建一个 FormData 对象来存储参数
+        const formData = new FormData();
+        formData.append('userId', userId);
+        formData.append('newsId', newsId);
+
+        // 添加调试语句，查看发送的请求体内容
+        console.log("Sending request to /history/recordClick with userId: ", userId, " and newsId: ", newsId);
+
+        // 使用 axios 发送 FormData 格式的请求
+        axios.post('/history/recordClick', formData)
+                .then(response => {
+                  console.log('记录点击历史成功：', response.data);
+                })
+                .catch(error => {
+                  console.error('记录点击历史失败：', error);
+                });
+      },
+
+
+      goBack: function() {
+        // 获取新闻ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const newsId = urlParams.get('id');
+
+        // 调用记录点击历史方法
+        if (this.userId && newsId) {
+          this.recordClick(this.userId, newsId); // 修改此行，使用箭头函数确保上下文一致
+        } else {
+          console.error('无法获取用户ID或新闻ID');
+        }
+
+        // 返回上一页
+        window.history.back();
+
+        // 重新加载新闻信息
+        this.loadNews(newsId);
+      },
+
+
+      loadNews: function(newsId) {
+        // 获取点赞数
+        axios.get(`/news/${newsId}/likeCount`)
+                .then(response => {
+                  this.likes = response.data; // 更新点赞数
+                })
+                .catch(error => {
+                  console.error('获取点赞数失败：', error);
+                });
+
+        // 获取浏览数
+        axios.get(`/news/${newsId}/clickCount`)
+                .then(response => {
+                  this.click = response.data; // 更新浏览数
+                })
+                .catch(error => {
+                  console.error('获取浏览数失败：', error);
+                });
+
+        // 获取新闻详情
+        axios.get(`/news/title-and-content/${newsId}`)
+                .then(response => {
+                  if (response.data.code === '1009') {
+                    console.error('获取新闻详情失败：找不到对应的新闻记录');
+                  } else {
+                    if (response.data.data && response.data.data.content) {
+                      this.newsContent = response.data.data.content;
+                    } else {
+                      console.error('获取新闻详情失败：返回的数据不完整或为空');
+                    }
+                  }
+                })
+                .catch(error => {
+                  console.error('获取新闻详情失败：', error);
+                });
+
+        // 获取新闻数据（假设news数据从服务器获取）
+        axios.get(`/news/${newsId}`)
+                .then(response => {
+                  this.news = response.data; // 更新新闻数据
+                })
+                .catch(error => {
+                  console.error('获取新闻数据失败：', error);
+                });
+      },
+
+    }
+
+  });
+</script>
+</body>
+</html>

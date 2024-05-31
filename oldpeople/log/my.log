@@ -1,0 +1,90 @@
+2024-05-20 16:53:19.617  INFO 16216 --- [main] com.javacode.OldpeopleApplication        : Starting OldpeopleApplication using Java 17.0.8 on LAPTOP-2U8GT6J0 with PID 16216 (D:\Java_practice\oldpeople\target\classes started by LJY in D:\Java_practice\oldpeople)
+2024-05-20 16:53:19.624  INFO 16216 --- [main] com.javacode.OldpeopleApplication        : No active profile set, falling back to 1 default profile: "default"
+2024-05-20 16:53:20.496  WARN 16216 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 16:53:20.570  WARN 16216 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 16:53:20.861  INFO 16216 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (http)
+2024-05-20 16:53:20.873  INFO 16216 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-05-20 16:53:20.873  INFO 16216 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.63]
+2024-05-20 16:53:20.982  INFO 16216 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-05-20 16:53:20.982  INFO 16216 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1314 ms
+2024-05-20 16:53:21.066  INFO 16216 --- [main] c.a.d.s.b.a.DruidDataSourceAutoConfigure : Init DruidDataSource
+2024-05-20 16:53:21.144  INFO 16216 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2024-05-20 16:53:22.290  INFO 16216 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
+2024-05-20 16:53:22.296  INFO 16216 --- [main] com.javacode.OldpeopleApplication        : Started OldpeopleApplication in 3.193 seconds (JVM running for 3.886)
+2024-05-20 16:53:23.663  INFO 16216 --- [http-nio-8888-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-05-20 16:53:23.663  INFO 16216 --- [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-05-20 16:53:23.663  INFO 16216 --- [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-05-20 16:56:20.641  WARN 16216 --- [http-nio-8888-exec-6] c.a.druid.pool.DruidAbstractDataSource   : discard long time none received connection. , jdbcUrl : jdbc:mysql://localhost:3306/health?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8, version : 1.2.4, lastPacketReceivedIdleMillis : 131425
+2024-05-20 16:56:20.641  WARN 16216 --- [http-nio-8888-exec-6] c.a.druid.pool.DruidAbstractDataSource   : discard long time none received connection. , jdbcUrl : jdbc:mysql://localhost:3306/health?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8, version : 1.2.4, lastPacketReceivedIdleMillis : 166854
+2024-05-20 16:56:20.642  WARN 16216 --- [http-nio-8888-exec-6] c.a.druid.pool.DruidAbstractDataSource   : discard long time none received connection. , jdbcUrl : jdbc:mysql://localhost:3306/health?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8, version : 1.2.4, lastPacketReceivedIdleMillis : 174622
+2024-05-20 16:59:48.794  INFO 16216 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closing ...
+2024-05-20 16:59:48.797  INFO 16216 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
+2024-05-20 16:59:53.219  INFO 10556 --- [main] com.javacode.OldpeopleApplication        : Starting OldpeopleApplication using Java 17.0.8 on LAPTOP-2U8GT6J0 with PID 10556 (D:\Java_practice\oldpeople\target\classes started by LJY in D:\Java_practice\oldpeople)
+2024-05-20 16:59:53.221  INFO 10556 --- [main] com.javacode.OldpeopleApplication        : No active profile set, falling back to 1 default profile: "default"
+2024-05-20 16:59:53.676  WARN 10556 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 16:59:53.748  WARN 10556 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 16:59:54.007  INFO 10556 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (http)
+2024-05-20 16:59:54.014  INFO 10556 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-05-20 16:59:54.014  INFO 10556 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.63]
+2024-05-20 16:59:54.097  INFO 10556 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-05-20 16:59:54.097  INFO 10556 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 830 ms
+2024-05-20 16:59:54.184  INFO 10556 --- [main] c.a.d.s.b.a.DruidDataSourceAutoConfigure : Init DruidDataSource
+2024-05-20 16:59:54.261  INFO 10556 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2024-05-20 16:59:55.176  INFO 10556 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
+2024-05-20 16:59:55.176  INFO 10556 --- [main] com.javacode.OldpeopleApplication        : Started OldpeopleApplication in 2.4 seconds (JVM running for 3.038)
+2024-05-20 17:00:04.376  INFO 10556 --- [http-nio-8888-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-05-20 17:00:04.376  INFO 10556 --- [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-05-20 17:00:04.377  INFO 10556 --- [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-05-20 17:05:45.356  INFO 10556 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closing ...
+2024-05-20 17:05:45.361  INFO 10556 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
+2024-05-20 17:05:48.611  INFO 19232 --- [main] com.javacode.OldpeopleApplication        : Starting OldpeopleApplication using Java 17.0.8 on LAPTOP-2U8GT6J0 with PID 19232 (D:\Java_practice\oldpeople\target\classes started by LJY in D:\Java_practice\oldpeople)
+2024-05-20 17:05:48.613  INFO 19232 --- [main] com.javacode.OldpeopleApplication        : No active profile set, falling back to 1 default profile: "default"
+2024-05-20 17:05:49.035  WARN 19232 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 17:05:49.104  WARN 19232 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 17:05:49.358  INFO 19232 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (http)
+2024-05-20 17:05:49.364  INFO 19232 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-05-20 17:05:49.364  INFO 19232 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.63]
+2024-05-20 17:05:49.449  INFO 19232 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-05-20 17:05:49.449  INFO 19232 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 792 ms
+2024-05-20 17:05:49.536  INFO 19232 --- [main] c.a.d.s.b.a.DruidDataSourceAutoConfigure : Init DruidDataSource
+2024-05-20 17:05:49.613  INFO 19232 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2024-05-20 17:05:50.534  INFO 19232 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
+2024-05-20 17:05:50.541  INFO 19232 --- [main] com.javacode.OldpeopleApplication        : Started OldpeopleApplication in 2.37 seconds (JVM running for 3.002)
+2024-05-20 17:06:43.116  INFO 19232 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closing ...
+2024-05-20 17:06:43.121  INFO 19232 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
+2024-05-20 17:06:45.726  INFO 19040 --- [main] com.javacode.OldpeopleApplication        : Starting OldpeopleApplication using Java 17.0.8 on LAPTOP-2U8GT6J0 with PID 19040 (D:\Java_practice\oldpeople\target\classes started by LJY in D:\Java_practice\oldpeople)
+2024-05-20 17:06:45.728  INFO 19040 --- [main] com.javacode.OldpeopleApplication        : No active profile set, falling back to 1 default profile: "default"
+2024-05-20 17:06:46.201  WARN 19040 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 17:06:46.282  WARN 19040 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 17:06:46.524  INFO 19040 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (http)
+2024-05-20 17:06:46.530  INFO 19040 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-05-20 17:06:46.530  INFO 19040 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.63]
+2024-05-20 17:06:46.615  INFO 19040 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-05-20 17:06:46.616  INFO 19040 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 848 ms
+2024-05-20 17:06:46.699  INFO 19040 --- [main] c.a.d.s.b.a.DruidDataSourceAutoConfigure : Init DruidDataSource
+2024-05-20 17:06:46.766  INFO 19040 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2024-05-20 17:06:47.652  INFO 19040 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
+2024-05-20 17:06:47.659  INFO 19040 --- [main] com.javacode.OldpeopleApplication        : Started OldpeopleApplication in 2.338 seconds (JVM running for 3.112)
+2024-05-20 17:07:11.065  INFO 19040 --- [http-nio-8888-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-05-20 17:07:11.065  INFO 19040 --- [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-05-20 17:07:11.065  INFO 19040 --- [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-05-20 17:09:32.679  INFO 19040 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closing ...
+2024-05-20 17:09:32.684  INFO 19040 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
+2024-05-20 17:09:35.272  INFO 20508 --- [main] com.javacode.OldpeopleApplication        : Starting OldpeopleApplication using Java 17.0.8 on LAPTOP-2U8GT6J0 with PID 20508 (D:\Java_practice\oldpeople\target\classes started by LJY in D:\Java_practice\oldpeople)
+2024-05-20 17:09:35.275  INFO 20508 --- [main] com.javacode.OldpeopleApplication        : No active profile set, falling back to 1 default profile: "default"
+2024-05-20 17:09:35.807  WARN 20508 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 17:09:35.905  WARN 20508 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.javacode]' package. Please check your configuration.
+2024-05-20 17:09:36.175  INFO 20508 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (http)
+2024-05-20 17:09:36.181  INFO 20508 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-05-20 17:09:36.181  INFO 20508 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.63]
+2024-05-20 17:09:36.266  INFO 20508 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-05-20 17:09:36.266  INFO 20508 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 946 ms
+2024-05-20 17:09:36.353  INFO 20508 --- [main] c.a.d.s.b.a.DruidDataSourceAutoConfigure : Init DruidDataSource
+2024-05-20 17:09:36.423  INFO 20508 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2024-05-20 17:09:37.347  INFO 20508 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
+2024-05-20 17:09:37.353  INFO 20508 --- [main] com.javacode.OldpeopleApplication        : Started OldpeopleApplication in 2.477 seconds (JVM running for 3.312)
+2024-05-20 17:09:37.558  INFO 20508 --- [http-nio-8888-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-05-20 17:09:37.558  INFO 20508 --- [http-nio-8888-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-05-20 17:09:37.558  INFO 20508 --- [http-nio-8888-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-05-20 17:11:08.847  INFO 20508 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closing ...
+2024-05-20 17:11:08.852  INFO 20508 --- [SpringApplicationShutdownHook] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed

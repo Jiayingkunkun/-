@@ -1,0 +1,71 @@
+server:
+  port: 8888
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/health?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8
+    username: root
+    password: 1234
+    hikari:
+      max-lifetime: 1000000
+  thymeleaf:
+    cache: false #关闭缓存
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  upload:
+    path: D:\Java_practice\oldpeople\src\main\resources\static\end\uploads
+
+#oldpeople前的路径修改为你存放oldpeople的路径
+file:
+  path: C:\Users\lenovo\Desktop\2024034562-02素材与源码\oldpeople\src\main\resources\static\file
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.javacode.entity
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+authority:
+  info: '[]'
+
+logging:
+  file:
+    path: log
+    name: log/my.log
+  level:
+    com:
+      javacode:
+        dao: debug
+#mybatis
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.javacode.entity
+  global-config:
+    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 1
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #刷新mapper 调试神器
+    refresh-mapper: true
+    #逻辑删除配置
+    logic-delete-value: -1
+    logic-not-delete-value: 0
+    #自定义SQL注入器
+    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    call-setters-on-nulls: true
+    #springboot 项目mybatis plus 设置 jdbcTypeForNull (oracle数据库需配置JdbcType.NULL, 默认是Other)
+    jdbc-type-for-null: 'null'

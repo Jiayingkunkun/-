@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>老人信息</title>
+    <!-- 引入必要的样式文件 -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.css" rel="stylesheet">
+    <link href="../css/basic.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">
+    <link href="../css/my.css" rel="stylesheet">
+    <link href="../css/element/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/index.css">
+
+    <style>
+        /* 添加自定义样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin: 0; /* 添加此行以消除默认的 body 边距 */
+        }
+        /* 导航栏样式 */
+        .navbar {
+            background-color: #333; /* 导航栏背景颜色 */
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 28px 25px; /* 上下内边距 15px，左右内边距 20px */
+            text-decoration: none;
+            font-size: 25px; /* 字体大小 */
+            transition: background-color 0.3s; /* 添加过渡效果 */
+        }
+
+        .navbar a:hover {
+            background-color: #555; /* 鼠标悬停时的背景颜色变为深灰色 */
+        }
+
+        .navbar a.active {
+            background-color: #427ea2; /* 当前页面的背景颜色 */
+            padding: 28px 25px;
+        }
+
+        .section {
+            padding: 20px 0; /* 上下留出一些空白 */
+        }
+
+
+        .header-right {
+            float: right;
+            padding: 15px; /* 右侧元素的内边距 */
+        }
+
+        .header-right a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 16px; /* 上下内边距 12px，左右内边距 16px */
+            font-size: 16px; /* 字体大小 */
+        }
+
+        .header-right a:hover {
+            background-color: #555; /* 鼠标悬停时的背景颜色变为深灰色 */
+        }
+
+        .welcome-text {
+            color: white;
+            padding: 20px; /* 欢迎文本的内边距 */
+            float: right;
+            font-size: 18px; /* 字体大小 */
+        }
+        .elder-info {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start; /* 垂直对齐到顶部 */
+            flex-wrap: wrap; /* 允许内容换行 */
+        }
+        .elder-item {
+            width: 50%; /* 一行显示两个容器 */
+            box-sizing: border-box; /* 包含边框在内的尺寸计算 */
+            padding: 10px; /* 为了保持间距 */
+        }
+        .elder-image-container {
+            width: 300px; /* 固定图片容器宽度 */
+            height: 300px;
+            margin-right: 20px;
+            border-radius: 8px;
+            overflow: hidden; /* 隐藏溢出部分 */
+        }
+        .elder-image {
+            width: 100%; /* 保持图片等比例放大 */
+            height: auto;
+            display: block;
+        }
+        .elder-details {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-top: 10px; /* 上方间距 */
+        }
+        .elder-details h2 {
+            margin-top: 0; /* 移除标题顶部间距 */
+        }
+        .elder-details p {
+            margin: 5px 0; /* 段落间距 */
+        }
+
+    </style>
+
+</head>
+<body>
+<div id="app">
+    <!-- 头部导航栏 -->
+    <nav class="navbar">
+        <a href="index1.html" :class="{ active: currentPage === 'index' }">用户首页</a>
+        <a href="newsinfo1.html" :class="{ active: currentPage === 'newsinfo' }">健康资讯</a>
+        <a href="oldinfo1.html" :class="{ active: currentPage === 'oldinfo' }">老人信息</a>
+        <a href="us.html" :class="{ active: currentPage === 'us' }">关于我们</a>
+        <div class="header-right">
+            <a href="javascript:void(0)" @click="logout" title="退出登录">
+                <i class="fa fa-sign-out"></i> 退出登录
+            </a>
+            <a href="accountUserInfo.html" title="个人信息">
+                <i class="fa fa-user"></i> 个人信息
+            </a>
+        </div>
+        <div class="welcome-text">
+            欢迎您，{{user.name}}
+        </div>
+    </nav>
+    <!-- 老人信息标题 -->
+    <div class="section elder-info">
+        <h2>老人信息</h2>
+    </div>
+
+    <!-- 老人信息容器 -->
+    <div class="section">
+        <!-- 每个老人的块元素 -->
+        <div class="elder-item" v-for="old in olds" :key="old.id">
+            <div class="elder-info">
+                <!-- 老人图片 -->
+                <div class="elder-image-container">
+                    <img v-if="old.image" :src="getPictureUrl(old.image)" alt="老人图片" class="elder-image">
+                </div>
+                <!-- 老人信息 -->
+                <div class="elder-details">
+                    <h2>{{ old.name }}</h2>
+                    <p>年龄：{{ old.age }}</p>
+                    <p>性别：{{ old.sex }}</p>
+                    <p>出生日期：{{ formatDate(old.birthdate) }}</p>
+                    <p>家属电话：{{ old.phone }}</p>
+                    <p>街道：{{ old.street }}</p>
+                    <p>详细地址：{{ old.address }}</p>
+                    <p>健康系数：{{ old.health }}</p>
+                    <p>身体状况：{{ old.body }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 引入Vue.js和axios -->
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            user: {},
+            olds: [], // 存储老人信息
+            currentPage: '' // 存储当前页面标识
+        },
+        created: function() {
+            // 从登录页面login.html获取登录的用户类型
+            this.user = JSON.parse(localStorage.getItem('user'));
+            if (this.user && this.user.id) {
+                this.setCurrentPage();
+                this.fetchOlds();
+                // 设置 currentPage 值
+
+            } else {
+                console.error('用户信息未正确设置');
+            }
+        },
+        methods: {
+            setCurrentPage: function() {
+                // 获取当前页面的 URL
+                var currentPageUrl = window.location.pathname;
+                console.log('当前页面路径:', currentPageUrl);
+                // 根据 URL 设置 currentPage 的值
+                switch (currentPageUrl) {
+                    case '/end/page/index1.html':
+                        this.currentPage = 'index';
+                        break;
+                    case '/end/page/newsinfo1.html':
+                        this.currentPage = 'newsinfo';
+                        break;
+                    case '/end/page/oldinfo1.html':
+                        this.currentPage = 'oldinfo';
+                        break;
+                    case '/end/page/us.html':
+                        this.currentPage = 'us';
+                        break;
+                    default:
+                        this.currentPage = ''; // 如果当前页面不在上述页面中，可以设置为空值或其他默认值
+                }
+                console.log('设置的 currentPage 值:', this.currentPage);
+            },
+            fetchOlds: function() {
+                // 获取当前用户的关联老人信息
+                axios.get(`/familyinfo/old?userId=${this.user.id}`)
+                    .then(response => {
+                        console.log('成功获取到关联老人信息数据：', response.data);
+                        this.olds = response.data;
+                        this.setCurrentPage();
+                    })
+                    .catch(error => {
+                        console.error('获取关联老人信息失败：', error);
+                    });
+            },
+            // 获取图片URL方法
+            getPictureUrl: function(fileName) {
+                const url = `http://localhost:8888/uploads/${encodeURIComponent(fileName)}`;
+                console.log('图片 URL：', url);
+                return url;
+            },
+            // 格式化日期方法
+            formatDate: function(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+            },
+            logout: function() {
+                // 清除本地存储的用户信息并跳转到登录页面
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+    });
+</script>
+</body>
+</html>

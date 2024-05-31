@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>社区独居老人健康管理系统</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	<link href="../css/font-awesome.css" rel="stylesheet">
+	<link href="../css/basic.css" rel="stylesheet">
+	<link href="../css/custom.css" rel="stylesheet">
+	<link href="../css/my.css" rel="stylesheet">
+	<link href="../css/element/index.css" rel="stylesheet">
+	<link rel="stylesheet" href="../css/index.css">
+	<link rel="stylesheet" href="../css/index1-style.css">
+	<script src="../js/animate.js"></script>
+	<script src="../js/index.js"></script>
+	<link href="../css/quill.snow.css" rel="stylesheet">
+	<style>
+		/*防止页面的变量显示中断，这段可以防止页面抖动*/
+		[v-cloak]{
+			display: none;
+		}
+
+	</style>
+
+</head>
+<body>
+<div id="app">
+	<!-- 导航栏 -->
+	<nav class="navbar">
+		<a href="index1.html" :class="{ active: currentPage === 'index' }">用户首页</a>
+		<a href="newsinfo1.html" :class="{ active: currentPage === 'newsinfo' }">健康资讯</a>
+		<a href="oldinfo1.html" :class="{ active: currentPage === 'oldinfo' }">老人信息</a>
+		<a href="us.html" :class="{ active: currentPage === 'us' }">关于我们</a>
+		<div class="header-right">
+			<a href="javascript:void(0)" @click="logout" title="退出登录">
+				<i class="fa fa-sign-out"></i> 退出登录
+			</a>
+			<a href="accountUserInfo.html" title="个人信息">
+				<i class="fa fa-user"></i> 个人信息
+			</a>
+		</div>
+		<div class="welcome-text">
+			欢迎您，{{user.name}}
+		</div>
+	</nav>
+
+	<!-- 轮播图 -->
+	<div class="focus">
+		<!-- 左侧按钮 -->
+		<a href="javascript:;" class="arrow-l">&lt;</a>
+		<!-- 右侧按钮 -->
+		<a href="javascript:;" class="arrow-r">&gt;</a>
+		<!-- 核心的滚动区域 -->
+		<ul >
+			<li><a href="#"><img src="/20.png" alt=""></a></li>
+			<li><a href="#"><img src="/400.jpg" alt=""></a></li>
+			<li><a href="#"><img src="/21.3.webp" alt=""></a></li>
+		</ul>
+		<ol class="circle"></ol>
+	</div>
+
+	<div class="section" style="display: flex; justify-content: space-between;">
+		<!-- 公告通知容器 -->
+		<div class="section-container announcement-container" style="flex: 1; margin-right: 20px;">
+				<h3 style="margin-bottom: -55px; font-size: 35px;">公告通知</h3>
+				<!-- 公告表格 -->
+				<div class="announcement-table">
+					<div class="table-responsive">
+						<div class="nx-table-header">
+							<input type="text" placeholder="请输入查询内容" v-model="name" @keyup.enter="loadTable(1)">
+							<i class="glyphicon glyphicon-search"></i>
+						</div>
+						<table class="table table-striped table-bordered table-hover">
+							<thead>
+							<tr>
+								<th>公告标题</th>
+								<th>公告内容</th>
+								<th>公告时间</th>
+							</tr>
+							</thead>
+							<tbody v-for="obj in objs">
+							<tr>
+								<td>{{obj.title}}</td>
+								<td><button class="view-announcement-btn" v-on:click="init(obj)">查看</button></td>
+								<td>{{obj.time}}</td>
+							</tr>
+							</tbody>
+						</table>
+						<!--翻页功能-->
+						<ul class="pagination">
+							<li class="page-item" v-bind:class="{disabled:preActive}">
+								<a class="page-link" href="javascript:void(0)" v-on:click="loadTable(pageInfo.pageNum - 1)">上一页</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" v-if="pageInfo.pageNum > 1" href="javascript:void(0)"
+								   v-on:click="loadTable(pageInfo.pageNum - 1)">{{pageInfo.pageNum - 1}}</a>
+							</li>
+							<li class="page-item disabled">
+								<a class="page-link" href="javascript:void(0)">{{pageInfo.pageNum}}</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" v-if="pageInfo.hasNextPage" href="javascript:void(0)"
+								   v-on:click="loadTable(pageInfo.pageNum - 1)">{{pageInfo.pageNum + 1}}</a>
+							</li>
+							<li class="page-item" v-bind:class="{disabled:nextActive}">
+								<a class="page-link" href="javascript:void(0)"
+								   v-on:click="loadTable(pageInfo.hasNextPage?(pageInfo.pageNum + 1):pageInfo.pageNum)">下一页</a>
+							</li>
+						</ul>
+				</div>
+				<!-- 公告内容显示区域 -->
+				<div v-if="showContent" style="margin-top: 20px;">
+					<h4>公告内容：</h4>
+				</div>
+			</div>
+<!--			&lt;!&ndash; 公告内容显示区域 &ndash;&gt;-->
+<!--			<div v-if="showContent" style="margin-top: 20px;">-->
+<!--				<h4>公告内容：</h4>-->
+<!--			</div>-->
+		</div>
+		<!-- 老人信息容器 -->
+		<div class="section-container elder-info" style="flex: 1; margin-left: 20px;">
+			<h2 style="margin-bottom: 20px; margin-top: 20px;">老人信息</h2>
+			<!-- 每个老人的块元素 -->
+			<div class="elder-item" v-for="old in olds" :key="old.id" style="margin: 0 5px; display: inline-block;">
+				<!-- 老人图片 -->
+				<div class="newsinfo-item" @click="goToOldDetail(old.id)">
+					<!-- 使用 v-if 确保只在图片存在时渲染 -->
+					<img v-if="old.image" :src="getPictureUrl(old.image)" alt="老人图片" style="max-width: 100%; max-height: 250px;">
+					<!-- 老人名字 -->
+					<h3 @click="goToOldDetail(old.id)">{{ old.name }}</h3>
+					<!-- 阅读更多链接 -->
+					<a href="javascript:void(0)" @click="goToOldDetail(old.id)">了解更多</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 分割线 -->
+	<div class="divider"></div>
+
+	<div class="row">
+		<!-- 健康资讯容器，占据四分之三的宽度 -->
+		<div class="col-md-9">
+			<div class="section health-info">
+				<h2>健康资讯</h2>
+			</div>
+			<!-- 新闻预览图 -->
+			<div class="section">
+				<!-- 页面内容 -->
+				<div class="row">
+					<div class="col-md-4" v-for="news in newss" :key="news.id">
+						<div class="newsinfo-item" @click="updateClickCount(news.id)">
+							<img v-if="news.picture" :src="getPictureUrl(news.picture)" alt="新闻图片" style="max-width: 100%; max-height: 250px;">
+							<h3>{{ news.title }}</h3>
+							<p>{{ news.description }}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 反馈信息容器，占据剩余的宽度 -->
+		<div class="col-md-3">
+			<div class="section health-info">
+				<h2>反馈信息</h2>
+			</div>
+		</div>
+	</div>
+
+</div>
+<!-- 模态框 -->
+<div class="modal" id="mod">
+	<div class="modal-dialog" style="margin-top: 140px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">公告</h4>
+				<button type="button" class="close" data-dismiss="modal">×</button>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal">
+					<input type="hidden" id="modal-id" name="modal-id">
+					<div class="form-group">
+						<div class="col-sm-3 control-label">公告标题</div>
+						<div class="col-sm-7">
+							<input id="modal-title" name="modal-title" type="text" class="form-control" placeholder="请输入标题" readonly>
+						</div>
+					</div>
+					<div id="editor" style="min-height: 300px" contenteditable="false">
+
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.metisMenu.js"></script>
+<script src="../js/custom.js"></script>
+<script src="../js/my.js"></script>
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+<script src="../js/echarts.min.js"></script>
+<script src="../js/element/index.js"></script>
+<script src="../js/quill.js"></script>
+<script>
+	$(document).ready(function() {
+		$('#carouselExampleIndicators').carousel();
+	});
+	function msg(type,msg){
+		Vue.prototype.$message({
+			type: type,  //success(成功) ，warning (警告)，error(错误)
+			message: msg,
+			duration: 2000,
+			offset: 100,
+			center: true
+		})
+	}
+	//富文本编辑器
+	let quill = new Quill('#editor',{
+		modules: {
+			toolbar: {
+				container:[
+
+				]
+			}
+		},
+		theme: 'snow'
+	});
+	let app = new Vue({
+		el:"#app",
+		data: {
+			user: {},
+			newss: [],
+			name: '',
+			olds: [],
+			announcements: [],
+			selectedAnnouncement: {},
+			showContent: false,
+			objs: [],
+			pageInfo: {},
+			preActive: true,
+			nextActive: true,
+			currentPage: '',
+			pageSize: 5 ,// 设置初始值为 10，您可以根据实际情况调整
+			modalContent: '', // 初始化模态框内容
+			isModalVisible: false ,// 控制模态框显示/隐藏的状态
+		},
+		created: function() {
+			// 从登录页面login.html获取登录的用户类型
+			this.user = JSON.parse(localStorage.getItem('user'));
+			console.log('当前用户信息:', this.user);
+			if (this.user && this.user.id) {
+				this.fetchRecommendedNews();
+				this.setCurrentPage();
+				this.fetchOlds();
+			} else {
+				console.error('用户信息未正确设置');
+			}
+			// 在用户登录成功后，将用户ID存储在localStorage中
+			localStorage.setItem('userId', this.user.id);
+			this.loadTable(1);  //查询第一页，在下面完善这个方法
+
+		},
+		methods:{
+			//公告查看内容初始化
+			init(o) {
+				fetch(`/notice/${o.id}/click`, {
+					method: 'POST'
+				})
+						.then(response => {
+							if (response.ok) {
+								// 成功更新点击次数，继续模态框显示逻辑
+								$('#modal-id').val(o.id);
+								$('#modal-title').val(o.title);
+								quill.root.innerHTML = o.content; // 获取公告内容
+								$('#mod').modal('show'); // 显示模态框
+							} else {
+								// 处理更新点击次数请求失败的情况
+								console.error('无法更新notice表中的点击次数');
+							}
+						})
+						.catch(error => {
+							console.error('更新点击次数时出错:', error);
+						});
+			},
+			//查询公告内容
+			loadTable(pageNum) {
+				let name = this.name === '' ? 'all' : this.name;
+				let pageSize = 8;
+				axios.get("/notice/page/" + name + "?pageNum=" + pageNum + "&pageSize=" + pageSize)
+						.then(res => {
+							if (res.data.code === '0') {
+								this.objs = res.data.data.list;
+								this.pageInfo = res.data.data;
+								this.preActive = !(this.pageInfo.hasPreviousPage);
+								this.nextActive = !(this.pageInfo.hasNextPage);
+							} else {
+								msg('error', res.data.msg);
+							}
+						});
+			},
+			setCurrentPage: function() {
+				// 获取当前页面的 URL
+				var currentPageUrl = window.location.pathname;
+				console.log('当前页面路径:', currentPageUrl);
+				// 根据 URL 设置 currentPage 的值
+				switch (currentPageUrl) {
+					case '/end/page/index1.html':
+						this.currentPage = 'index';
+						break;
+					case '/end/page/newsinfo1.html':
+						this.currentPage = 'newsinfo';
+						break;
+					case '/end/page/oldinfo1.html':
+						this.currentPage = 'oldinfo';
+						break;
+					case '/end/page/us.html':
+						this.currentPage = 'us';
+						break;
+					default:
+						this.currentPage = ''; // 如果当前页面不在上述页面中，可以设置为空值或其他默认值
+				}
+				console.log('设置的 currentPage 值:', this.currentPage);
+			},
+			fetchRecommendedNews: function() {
+				console.log('开始获取推荐新闻');
+				// 获取当前用户的推荐新闻
+				axios.get(`/familyinfo/news?userId=${this.user.id}`)
+						.then(response => {
+							this.newss = response.data;
+							this.setCurrentPage();
+							console.log('成功获取到推荐新闻数据：', this.newss);
+						})
+						.catch(error => {
+							console.error('获取推荐新闻失败：', error);
+						});
+			},
+			fetchOlds: function (){
+				console.log('开始获取老人信息');
+				// 获取当前用户的老人信息
+				axios.get(`/familyinfo/old?userId=${this.user.id}`)
+						.then(response => {
+							console.log('成功获取到老人信息数据：', response.data);
+							this.olds = response.data;
+							this.setCurrentPage();
+						})
+						.catch(error => {
+							console.error('获取老人信息失败：', error);
+						});
+			},
+			// 获取图片URL方法
+			getPictureUrl: function(fileName) {
+				const url = `http://localhost:8888/uploads/${encodeURIComponent(fileName)}`;
+				console.log('图片 URL：', url);
+				return url;
+			},
+			updateClickCount: function(newsId) {
+				// 从 localStorage 中获取用户 ID
+				const userId = localStorage.getItem('userId');
+				console.log('用户ID：', userId);
+				if (!userId) {
+					console.error('用户ID未找到');
+					return;
+				}
+				// 更新新闻点击次数并记录点击历史，将用户ID作为参数传递给recordClick方法
+				axios.post(`/news/${newsId}/click`, { userId: userId })
+						.then(response => {
+							// 如果点击次数更新成功，则记录点击历史
+							this.recordClick(userId, newsId);
+							// 然后跳转到新闻详情页面
+							this.goToDetailPage(newsId);
+						})
+						.catch(error => {
+							console.error('更新点击次数失败：', error);
+							// 如果点击次数更新失败，仍然记录点击历史
+							this.recordClick(userId, newsId);
+							// 然后跳转到新闻详情页面
+							this.goToDetailPage(newsId);
+						});
+			},
+			recordClick: function(userId, newsId) {
+				// 检查是否存在点击历史
+				let clickHistory = localStorage.getItem('/history/recordClick');
+				if (!clickHistory) {
+					// 如果不存在，创建一个空数组
+					clickHistory = [];
+				} else {
+					// 如果存在，解析 JSON 字符串为数组
+					clickHistory = JSON.parse(clickHistory);
+				}
+				// 添加当前点击记录到历史中
+				clickHistory.push({ userId: userId, newsId: newsId, timestamp: new Date().toISOString() });
+
+				// 保存更新后的点击历史
+				localStorage.setItem('history/recordClick', JSON.stringify(clickHistory));
+			},
+			goToDetailPage: function(newsId) {
+				// 跳转到新闻详情页面
+				window.location.href = `news-detail.html?id=${newsId}`;
+			},
+			goToOldDetail: function(oldId) {
+				// 跳转到老人详情页面
+				window.location.href = `old-detail.html?id=${oldId}`;
+			},
+		}
+	})
+</script>
+</body>
+</html>

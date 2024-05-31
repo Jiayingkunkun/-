@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javacode.mapper.OldinfoMapper">
+
+  <select id="findByName" resultType="com.javacode.entity.Oldinfo">
+    select *,
+     (select fa.name from familyinfo fa where fa.fno=o.familyid) familyname,
+    (select GROUP_CONCAT(concat(i.name, ': ', i.degree) SEPARATOR ', ')
+    from illness i
+    where FIND_IN_SET(i.id, REPLACE(REPLACE(REPLACE(o.illnessid, '[', ''), ']', ''), ' ', '')) > 0
+    ) illness
+    from oldinfo o
+    where 1=1
+    <if test="name !=null and name !='all' and name !=''">
+      and o.`name` like concat('%', #{name}, '%')
+    </if>
+    <if test="id !=null and id != ''">
+      and o.`id`=#{id}
+    </if>
+    order by `ehealth`
+  </select>
+
+
+  <select id="checkRepeat" resultType="java.lang.Integer">
+    select count(*) from oldinfo where ${column} = #{value}
+  </select>
+  <!-- OldinfoMapper.xml -->
+  <select id="getOldinfoByUserId" parameterType="java.lang.Long" resultType="com.javacode.entity.Oldinfo">
+    SELECT * FROM oldinfo WHERE id = #{userId}
+  </select>
+  <!-- 根据老人的 ID 查询老人信息 -->
+  <select id="getOldinfoById" parameterType="Long" resultType="com.javacode.entity.Oldinfo">
+    SELECT * FROM oldinfo WHERE id = #{oldInfoId}
+  </select>
+
+
+
+</mapper>

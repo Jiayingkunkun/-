@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>关于我们</title>
+    <!-- 引入必要的样式文件 -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.css" rel="stylesheet">
+    <link href="../css/basic.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">
+    <link href="../css/my.css" rel="stylesheet">
+    <link href="../css/element/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/index.css">
+
+    <style>
+        /* 导航栏样式 */
+        .navbar {
+            background-color: #333; /* 导航栏背景颜色 */
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 28px 25px;
+            text-decoration: none;
+            font-size: 25px; /* 字体大小 */
+            transition: background-color 0.3s; /* 添加过渡效果 */
+        }
+
+        .navbar a:hover {
+            background-color: #555; /* 鼠标悬停时的背景颜色变为深灰色 */
+        }
+
+        .navbar a.active {
+            background-color: #427ea2; /* 当前页面的背景颜色 */
+            padding: 28px 25px;
+        }
+        .section {
+            padding: 20px 0; /* 上下留出一些空白 */
+        }
+
+
+        .header-right {
+            float: right;
+            padding: 15px; /* 右侧元素的内边距 */
+        }
+
+        .header-right a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 16px; /* 上下内边距 12px，左右内边距 16px */
+            font-size: 16px; /* 字体大小 */
+        }
+
+        .header-right a:hover {
+            background-color: #555; /* 鼠标悬停时的背景颜色变为深灰色 */
+        }
+
+        .welcome-text {
+            color: white;
+            padding: 20px; /* 欢迎文本的内边距 */
+            float: right;
+            font-size: 18px; /* 字体大小 */
+        }
+
+        /* 内容容器样式 */
+        .section.elder-info {
+            background-color: #f1f3f6;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .image-box {
+            width: 500px;
+            border: 15px solid #ffffff;
+            border-radius: 10px;
+            margin-right: 40px;
+            position: relative; /* 使用相对定位 */
+            top: 10px; /* 将图片位置向上移动 */
+        }
+
+        .about-us-image {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            /*border-radius: 8px;*/
+        }
+
+        .text-content {
+            flex: 1;
+        }
+
+        .about-us-content p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+
+        /* 按钮样式 */
+        .btn.btn-info {
+            background-color: #337ab7;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        .btn.btn-info:hover {
+            background-color: #23527c;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin: 0; /* 添加此行以消除默认的 body 边距 */
+        }
+    </style>
+
+</head>
+<body>
+<div id="app">
+    <!-- 头部导航栏 -->
+    <nav class="navbar">
+        <a href="index1.html" :class="{ active: currentPage === 'index' }">用户首页</a>
+        <a href="newsinfo1.html" :class="{ active: currentPage === 'newsinfo' }">健康资讯</a>
+        <a href="oldinfo1.html" :class="{ active: currentPage === 'oldinfo' }">老人信息</a>
+        <a href="us.html" :class="{ active: currentPage === 'us' }">关于我们</a>
+        <div class="header-right">
+            <a href="javascript:void(0)" @click="logout" title="退出登录">
+                <i class="fa fa-sign-out"></i> 退出登录
+            </a>
+            <a href="accountUserInfo.html" title="个人信息">
+                <i class="fa fa-user"></i> 个人信息
+            </a>
+        </div>
+        <div class="welcome-text">
+            欢迎您，{{user.name}}
+        </div>
+    </nav>
+
+    <!-- 信息标题 -->
+    <div class="section elder-info">
+        <div class="container">
+            <div class="content-wrapper">
+                <div class="image-box">
+                    <img src="/1.1.jpg" alt="关于我们" class="about-us-image">
+                </div>
+                <div class="text-content">
+                    <h2>关于我们</h2>
+                    <hr>
+                    <div class="about-us-content">
+                        <p>敬老是一个永久的话题；老人，则是话题中不曾褪色的字眼。人生的问卷答到了这里，我们是否可以以耐心和爱心来续补这空缺的横线，在老人的阐述中重踏他们曾走过的路，从敬老的氛围中感受炽热的回忆……</p>
+                        <p>社区独居老年人健康管理系统设计的背景，源于我国人口老龄化的加速和社会人口结构的转变。目前我国已进入深度老龄化社会，独居老年人口数量不断增加。</p>
+                        <p>这部分老年人由于子女工作等原因，选择独居生活，因此他们在日常生活中的健康监管和照护需求增加，相应地社区工作人员的工作量也随之增加。</p>
+                        <p>中国人盛行的是：“百善孝为先”，从历史文化传承来说，尊老敬老爱老是中华民族的传统美德，别的民族咱们先不管不论，但是中华民族之所以是中华民族，之所以血浓于水，之所以历尽沧桑生生不息，之所以“人情味”非常浓厚，就是因为咱们中国人关爱老人爱护孩童。</p>
+                        <p>我们的团队由一群对老年人充满关爱和责任感的志愿者组成，他们经过专业培训，具备丰富的护理经验和人文关怀。我们不仅提供技术支持，更注重与老人之间的情感交流，用心倾听他们的需求，为他们的生活增添温暖和快乐。
+
+                            在这里，我们承诺为每一位社区独居老人创造一个温馨、安全的家庭环境，让他们感受到社会的温暖和关爱。我们愿意倾听您的心声，与您共同打造一个美好的晚年生活！
+
+                            感谢您的信任和支持，让我们携手并肩，为社区独居老人的健康和幸福努力奋斗！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 引入Vue.js和axios -->
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            user: {},
+            olds: [], // 存储老人信息
+            currentPage: '' // 存储当前页面标识
+        },
+        created: function() {
+            // 从登录页面login.html获取登录的用户类型
+            this.user = JSON.parse(localStorage.getItem('user'));
+            if (this.user && this.user.id) {
+                // 设置 currentPage 值
+                this.setCurrentPage();
+            } else {
+                console.error('用户信息未正确设置');
+            }
+        },
+        methods: {
+            setCurrentPage: function() {
+                // 获取当前页面的 URL
+                var currentPageUrl = window.location.pathname;
+                console.log('当前页面路径:', currentPageUrl);
+                // 根据 URL 设置 currentPage 的值
+                switch (currentPageUrl) {
+                    case '/end/page/index1.html':
+                        this.currentPage = 'index';
+                        break;
+                    case '/end/page/newsinfo1.html':
+                        this.currentPage = 'newsinfo';
+                        break;
+                    case '/end/page/oldinfo1.html':
+                        this.currentPage = 'oldinfo';
+                        break;
+                    case '/end/page/us.html':
+                        this.currentPage = 'us';
+                        break;
+                    default:
+                        this.currentPage = ''; // 如果当前页面不在上述页面中，可以设置为空值或其他默认值
+                }
+                console.log('设置的 currentPage 值:', this.currentPage);
+            },
+            logout: function() {
+                // 清除本地存储的用户信息并跳转到登录页面
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+    });
+</script>
+</body>
+</html>

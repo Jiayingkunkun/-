@@ -1,0 +1,87 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+a{
+    text-decoration: none;
+}
+/* 去掉li 的小圆点 */
+li {
+    list-style: none
+}
+.focus{
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background-color: white;
+    overflow: hidden;
+    margin:0px auto;
+    /*margin-left: 260px; !* 设置固定左侧距离 *!*/
+}
+.focus ul{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 600%;
+}
+
+.focus img {
+    height: auto; /* 设置图片高度为容器高度的百分之百 */
+    width: auto; /* 让图片宽度自适应 */
+}
+
+
+
+
+.focus ul li{
+    float: left;
+}
+.arrow-l,.arrow-r{
+    position: absolute;
+    font-family: 'icomoon';
+    width: 24px;
+    height: 40px;
+    top: 50%;
+    margin-top: -20px;
+    background: rgba(0, 0, 0, .3);
+    text-align: center;
+    line-height: 40px;
+    color: #fff;
+    font-size: 20px;
+    z-index: 2;
+}
+.arrow-r{
+    right:0;
+}
+.circle {
+    position: absolute;
+    bottom: 10px;
+    left: 50px;
+}
+
+.circle li {
+    float: left;
+    width: 8px;
+    height: 8px;
+    /* background-color: #fff; */
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    margin: 0 3px;
+    border-radius: 50%;
+    /*鼠标经过显示小手*/
+    cursor: pointer;
+}
+
+.current{
+    background-color: #fff;
+}
+/* Add styles for the carousel */
+.carousel {
+    width: 100%; /* 确保轮播图容器宽度是100% */
+    height: 300px; /* 根据需求设置轮播图容器的高度 */
+    overflow: hidden; /* 隐藏超出容器范围的部分 */
+}
+
+.carousel img {
+    width: 100%; /* 设置图片宽度为100%，以适应容器宽度 */
+    height: auto; /* 设置高度为自动，以保持图片宽高比例 */
+}

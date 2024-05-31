@@ -1,0 +1,27 @@
+/* 公告栏样式 */
+.announcement {
+    position: fixed; /* 固定在页面上 */
+    bottom: 20px; /* 距离底部 20px */
+    right: 20px; /* 距离右侧 20px */
+    background-color: #f9f9f9; /* 背景颜色 */
+    border: 1px solid #ccc; /* 边框 */
+    padding: 10px; /* 内边距 */
+    max-width: 300px; /* 最大宽度 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+
+/* 公告标题样式 */
+.announcement h3 {
+    margin-top: 0; /* 去除顶部边距 */
+    margin-bottom: 5px; /* 底部边距 */
+    font-size: 18px; /* 字体大小 */
+    color: #333; /* 字体颜色 */
+}
+
+/* 公告内容样式 */
+.announcement p {
+    margin-top: 0; /* 去除顶部边距 */
+    margin-bottom: 0; /* 去除底部边距 */
+    font-size: 14px; /* 字体大小 */
+    color: #666; /* 字体颜色 */
+}

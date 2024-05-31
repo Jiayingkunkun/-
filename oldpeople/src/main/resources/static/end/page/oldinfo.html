@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>老人信息</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.css" rel="stylesheet">
+    <link href="../css/basic.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">
+    <link href="../css/my.css" rel="stylesheet">
+    <link href="../css/element/index.css" rel="stylesheet">
+<!--    <link href="../css/bootstrap.css" rel="stylesheet">-->
+<!--    <link href="../css/bootstrap-multiselect.css" rel="stylesheet" >-->
+    <link href="../css/bootstrap-multiselect.min.css" rel="stylesheet" >
+    <style>
+        /*防止页面的变量显示中断，这段可以防止页面抖动*/
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+<!--头顶导航菜单-->
+    <nav class="navbar navbar-default navbar-cls-top" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">后台管理系统</a>
+        </div>
+        <div class="header-right">
+            <a href="javascript:void(0)" class="btn btn-info" @click="logout" title="退出登录">
+                <i class="fa fa-sign-out fa-2x"></i>
+            </a>
+        </div>
+        <div class="header-right">
+            <a href="accountUserInfo.html" class="btn btn-info" title="个人信息">
+                <i class="fa fa-user fa-2x"></i>
+            </a>
+        </div>
+        <div class="header-right" style="padding-top: 25px">
+            欢迎您，{{user.type}}
+        </div>
+    </nav>
+
+<!--左侧导航菜单-->
+    <nav class="navbar-default navbar-side">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <a href="index.html"><i class="fa fa-dashboard"></i>系统首页</a>
+                    <a href="video.html"><i class="fa fa-video-camera"></i>监控视频</a>
+                    <a href="phycheck.html"><i class="fa fa fa-building-o"></i>体检记录</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-yelp"></i>信息展示<span class="fa arrow"></span> </a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a class="active-menu" href="oldinfo.html"><i class="fa fa-table"></i>老人信息</a></li>
+                        <li><a href="mediinfo.html"><i class="fa fa-table"></i>服药信息</a></li>
+                        <li><a href="familyinfo.html"><i class="fa fa-table"></i>家属信息</a></li>
+                        <li><a href="illness.html"><i class="fa fa-table"></i>慢性病信息</a></li>
+                        <li><a href="notice.html"><i class="fa fa-table"></i>公告信息</a></li>
+                        <li><a href="news.html"><i class="fa fa-table"></i>新闻信息</a></li>
+                        <li><a href="feedback.html"><i class="fa fa-table"></i>反馈信息</a></li>
+                        <li><a href="user.html"><i class="fa fa-table"></i>用户信息</a></li>
+                    </ul>
+                </li>
+                <li><a href="accountUserInfo.html"><i class="fa fa-user"></i>个人信息</a></li>
+                <li><a href="updatePassword.html"><i class="fa fa-unlock-alt"></i>修改密码</a></li>
+                <li><a href="javascript:void(0)" @click="logout"><i class="fa fa-power-off"></i>退出登录</a></li>
+            </ul>
+        </div>
+    </nav>
+
+<!--页面中间内容-->
+    <div id="page-wrapper">
+        <div id="page-inner">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            老人信息列表
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <div class="nx-table-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <button class="btn btn-sm btn-primary" v-on:click="add()">新增</button>
+                                    <div style="display: flex; align-items: center; margin-left: auto;">
+                                        <div style="margin-right: 10px;">
+                                            <label class="display-inline-block">排序：</label>
+                                            <select class="custom-select" v-model="sortCriteria" v-on:change="onSortCriteriaChange"  style="width: 152px;height:30px">
+                                                <option value="id">ID</option>
+                                                <option value="health">健康指数</option>
+                                            </select>
+                                        </div>
+                                        <div style="display: flex; align-items: center;">
+                                            <input type="text" placeholder="请输入查询内容" v-model="name" @keyup.enter="loadTable(1)">
+                                            <i class="glyphicon glyphicon-search" style="margin-left: 5px;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>姓名</th>
+                                        <th>性别</th>
+                                        <th>年龄</th>
+                                        <th>电话</th>
+                                        <th>所在街道</th>
+                                        <th>详细地址</th>
+                                        <th>健康指数*</th>
+                                        <th>出生日期</th>
+                                        <th>老人照片</th>
+                                        <th>家属姓名</th>
+                                        <th>配偶</th>
+                                        <th>身体残疾</th>
+                                        <th>吸烟习惯</th>
+                                        <th>饮酒习惯</th>
+                                        <th>慢性病</th>
+                                        <th>注册时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody v-for="obj in objs">
+                                    <tr>
+                                        <td>{{obj.id}}</td>
+                                        <td style="width: 70px;">{{obj.name}}</td>
+                                        <td>{{obj.esex}}</td>
+                                        <td>{{obj.eage}}</td>
+                                        <td>{{obj.phone}}</td>
+                                        <td>{{obj.estreet}}</td>
+                                        <td>{{obj.eaddress}}</td>
+                                        <td>{{obj.ehealth}}</td>
+                                        <td>{{formatDate(obj.birthdate)}}</td>
+                                        <td>
+                                            <img v-if="obj.picture" :src="getPictureUrl(obj.picture)" style="max-width:100px; max-height: 200px; width: auto; height: auto;" />
+                                            <span v-else>暂无图片</span>
+                                        </td>
+                                        <td>{{obj.familyname}}</td>
+                                        <td>{{obj.mate}}</td>
+                                        <td>{{obj.body}}</td>
+                                        <td>{{obj.smoke}}</td>
+                                        <td>{{obj.drink}}</td>
+<!--                                        <td>{{obj.illness}}</td>-->
+                                        <td v-if="obj.illness">
+                                            <span data-toggle="popover" data-placement="top" :title="obj.illness" :data-content="obj.illness">{{ obj.illness.substring(0, 20) }}{{ obj.illness.length > 20 ? '...' : '' }}</span>
+                                        </td>
+                                        <td>{{obj.creattime}}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-xs" v-on:click="init(obj)">编辑</button>
+                                            <button class="btn btn-danger btn-xs" v-on:click="del(obj.id)">删除</button>
+                                            <input type="file" v-on:change="uploadImage(obj.id, $event)" accept="image/*" style="display: none;" />
+                                            <button class="btn btn-success btn-xs" @click="$event.target.previousElementSibling.click()">上传图片</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+<!--                                翻页功能-->
+                                <ul class="pagination">
+                                    <li class="page-item" v-bind:class="{disabled:preActive}">
+                                        <a class="page-link" href="javascript:void(0)" v-on:click="loadTable(pageInfo.pageNum - 1)">上一页</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" v-if="pageInfo.pageNum > 1" href="javascript:void(0)"
+                                           v-on:click="loadTable(pageInfo.pageNum - 1)">{{pageInfo.pageNum - 1}}</a>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="javascript:void(0)">{{pageInfo.pageNum}}</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" v-if="pageInfo.hasNextPage" href="javascript:void(0)"
+                                           v-on:click="loadTable(pageInfo.pageNum - 1)">{{pageInfo.pageNum + 1}}</a>
+                                    </li>
+                                    <li class="page-item" v-bind:class="{disabled:nextActive}">
+                                        <a class="page-link" href="javascript:void(0)"
+                                           v-on:click="loadTable(pageInfo.hasNextPage?(pageInfo.pageNum + 1):pageInfo.pageNum)">下一页</a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--    模态框（Model），新增的弹出页面-->
+    <div class="modal" id="mod">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="modal-title">请填写新增家属信息</span>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <input type="hidden" id="id" name="id" v-model="entity.id">
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">姓名</div>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="entity.name" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">性别</div>
+                            <div class="col-sm-7">
+                                <label class="radio-inline">
+                                    <input type="radio" value="女" v-model="entity.esex">女
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="男" v-model="entity.esex">男
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">出生日期</label>
+                            <div class="col-sm-7">
+                                <el-date-picker
+                                        v-model="entity.birthdate"
+                                        type="date"
+                                        format="yyyy-MM-dd"
+                                        placeholder="请选择出生日期"
+                                        @change="getAge">
+                                </el-date-picker>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">电话</div>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="entity.phone" placeholder="请输入电话号码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">所在街道</div>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="entity.estreet" placeholder="请输入所在街道">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">详细地址</div>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" v-model="entity.eaddress" placeholder="请输入详细地址">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">家属姓名</div>
+                            <div class="col-sm-7">
+                                <select class="form-control" v-model="entity.familyid">
+                                    <option v-for="item in familyObs" :value="item.fno">{{item.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">配偶</div>
+                            <div class="col-sm-7">
+                                <label class="radio-inline">
+                                    <input type="radio" value="有" v-model="entity.mate">有
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="无" v-model="entity.mate">无
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">身体残疾</div>
+                            <div class="col-sm-7">
+                                <label class="radio-inline">
+                                    <input type="radio" value="有" v-model="entity.body">有
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="无" v-model="entity.body">无
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">吸烟习惯</div>
+                            <div class="col-sm-7">
+                                <label class="radio-inline">
+                                    <input type="radio" value="有" v-model="entity.smoke">有
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="无" v-model="entity.smoke">无
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">饮酒习惯</div>
+                            <div class="col-sm-7">
+                                <label class="radio-inline">
+                                    <input type="radio" value="有" v-model="entity.drink">有
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="无" v-model="entity.drink">无
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">所患慢性病</div>
+                            <div class="col-sm-7">
+                                <select id="illnessSelect" class="form-control" v-model="entity.illnessid" multiple>
+                                    <option v-for="item in illnessObs" :value="item.id">{{ item.name + ': ' + item.degree }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label">上传老人照片</div>
+                            <div class="col-sm-7">
+                                <input @change="upload" @click="clearFile" multiple="multiple" type="file" ref="file">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" v-on:click="save()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    <div class="modal" id="myModal">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <span class="modal-title">老人照片预览</span>-->
+<!--                    <button type="button" class="close" data-dismiss="modal" @click="cancel">×</button>-->
+<!--                </div>-->
+<!--                <div class="modal-body" id="view-img" style="text-align: center">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+</div>
+
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.metisMenu.js"></script>
+<script src="../js/custom.js"></script>
+<script src="../js/my.js"></script>
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+<script src="../js/echarts.min.js"></script>
+<script src="../js/element/index.js"></script>
+<script src="../js/bootstrap-multiselect.js"></script>
+<script src="../js/bootstrap-multiselect.min.js"></script>
+<script>
+    function msg(type,msg){
+        Vue.prototype.$message({
+            type: type,  //success(成功) ，warning (警告)，error(错误)
+            message: msg,
+            duration: 2000,
+            offset: 100,
+            center: true,
+        })
+    }
+    new Vue({
+        el:"#wrapper",
+        data:{
+            user: {},
+            name: '',  //查询的名字默认为空
+            objs: [],
+            familyObs: [],   //所有家属
+            illnessObs: [],    //所有疾病: 程度
+            pageInfo: {},
+            preActive: true,  //没有上一页为true，有上一页为false
+            nextActive: true,  //没有下一页为true，有下一页为false
+            entity: {     //新增表单提交
+                esex: '女'
+            },
+            sortCriteria: 'id', // 默认按ID排序
+        },
+
+        created: function(){
+            //从登录页面login.html获取登录的用户类型
+            this.user = JSON.parse(localStorage.getItem('user'));
+            if(this.user == null){
+                this.user = {}; //设置一个空对象，以防止后续访问其属性时报错
+            }
+            this.loadTable(1);  //查询第一页，在下面完善这个方法
+            //从家属表中获取家属id，在上面映射为家属姓名
+            axios.get("/familyinfo/page/all?pageSize=1000").then(res => {
+                if(res.data.code ==='0'){
+                    this.familyObs = res.data.data.list;
+                }
+            });
+            // 添加从illness中获取数据的axios请求
+            axios.get("/illness/page/all?pageSize=1000").then(res => {
+                if(res.data.code === '0') {
+                    this.illnessObs = res.data.data.list;
+                }
+            });
+        },
+
+        //生命周期钩子函数 mounted()
+        mounted: function() {
+            //初始化多选框插件
+            $(document).ready(function() {
+                $('#illnessSelect').multiselect();
+            });
+        },
+
+        methods:{
+            //查询
+            loadTable(pageNum) {
+                let name = this.name === '' ? 'all' : this.name;
+                let sortField = this.sortCriteria === 'health' ? 'healthFactor' : 'id'; // 根据排序标准设置排序字段
+                axios.get(`/oldinfo/page/${name}?pageNum=${pageNum}&sortBy=${sortField}`).then(res => {
+                    if (res.data.code === '0') {
+                        this.objs = res.data.data.list;
+                        this.pageInfo = res.data.data;
+                        this.preActive = !(this.pageInfo.hasPreviousPage);
+                        this.nextActive = !(this.pageInfo.hasNextPage);
+                    } else {
+                        msg('error', res.data.msg);
+                    }
+                });
+            },
+            // 新增一个方法，用于监听下拉框选中项的变化
+            onSortCriteriaChange() {
+                // 根据排序标准选择对应的排序字段
+                let sortField = this.sortCriteria === 'health' ? 'ehealth' : 'id';
+
+                // 使用 JavaScript 的数组排序方法对数据进行排序
+                this.objs.sort((a, b) => {
+                    // 比较两个对象的排序字段值
+                    if (a[sortField] < b[sortField]) {
+                        return -1; // 如果a小于b，则a排在b前面
+                    }
+                    if (a[sortField] > b[sortField]) {
+                        return 1; // 如果a大于b，则b排在a前面
+                    }
+                    return 0; // 如果相等，则保持原有顺序
+                });
+            },
+
+            //显示新增
+            add(){
+                this.entity = {esex: '女'};
+                $('#mod').modal('show');   //显示表单
+            },
+
+            //将当前表单（新增或修改用户表单）保存到数据库
+            save(){
+                //需要先经过checkValid判断。（ctrl点击查看）
+                if(!checkValid(this.entity)){
+                    return false;
+                }
+                // 将数组转换为字符串
+                this.entity.illnessid = JSON.stringify(this.entity.illnessid);
+
+                //如果没有id值，就是新增功能
+                if(!this.entity.id){   //新增
+                    axios.post("/oldinfo",this.entity).then(res => {
+                        if(res.data.code === "0"){
+                            msg('success','添加成功');
+                            $('#mod').modal('hide');   //隐藏表单
+                            this.loadTable(1);   //刷新页面
+                        }else {
+                            msg('error',res.data.msg);  //失败返回错误信息
+                        }
+                    });
+                }else{  //修改
+                    axios.put("/oldinfo",this.entity).then(res => {
+                        if(res.data.code === "0"){
+                            msg('success','修改成功');
+                            //console.log("输出：", res.data.data.illnessid);
+                            $('#mod').modal('hide');   //隐藏表单
+                            this.loadTable(1);   //刷新页面
+                        }else {
+                            msg('error',res.data.msg);  //失败返回错误信息
+                        }
+                    });
+                }
+            },
+
+            //编辑初始化
+            init(o){
+                this.entity = JSON.parse(JSON.stringify(o));
+                $('#mod').modal('show');   //显示表单
+            },
+
+            //删除家属
+            del(id){
+                let _this = this;  //右边的this是这个页面的this
+                this.$confirm('确认删除？','系统提示',{
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    cancelButtonClass: 'btn-custom-cancel',
+                    type: 'warning'
+                }).then(function (){
+                    axios.delete("/oldinfo/" + id).then(res => {
+                        if(res.data.code === "0"){
+                            msg('success','删除成功');
+                            _this.loadTable(1);   //刷新页面
+                        }else {
+                            msg('error',res.data.msg);  //失败返回错误信息
+                        }
+                    });
+                }).catch(function (){
+                    console.log("取消成功！");
+                });
+            },
+
+            //根据出生日期获取年龄
+            getAge() {
+                if (!this.entity.birthdate) return; // 如果出生日期为空，则返回
+                const birthDate = new Date(this.entity.birthdate); // 将出生日期转换为 Date 对象
+                const today = new Date(); // 获取当前日期
+                // 计算年龄
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--; // 如果当前月份小于出生月份，或者当前月份等于出生月份但当前日期小于出生日期，则年龄减一
+                }
+                // 将计算得到的年龄赋值给实体对象中的年龄属性
+                this.entity.eage = age;
+            },
+
+            //格式化出生日期
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            },
+
+            //上传文件
+            upload: function (){
+                let files = this.$refs.file.files;  //上传的多个文件放到files里
+                for(let i=0;i<files.length;i++){
+                    let formData = new FormData();
+                    formData.append("file",files[i]);
+                    axios.post('/fileinfo/upload',formData,{'Content-Type':'multipart/form-data'}).then(res => {
+                        if(res.data.code === "0"){
+                            msg('success','上传成功');
+                            this.entity.fileList.push(res.data.data.id);
+                        }else {
+                            msg('error',res.data.msg);  //失败返回错误信息
+                        }
+                    });
+                }
+            },
+
+            //清空文件
+            clearFile: function () {
+                this.entity.fileList = [];
+            },
+            //上传老人图片
+            uploadImage(id, event) {
+                const file = event.target.files[0];
+                const formData = new FormData();
+                formData.append('image', file);
+
+                axios.post(`/oldinfo/uploadImage/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                    .then(res => {
+                        if (res.data.code === '0') {
+                            msg('success', '图片上传成功');
+                            // 更新Vue数据对象中的图片地址
+                            const oldinfoIndex = this.objs.findIndex(obj => obj.id === id);
+                            if (oldinfoIndex !== -1) {
+                                this.objs[oldinfoIndex].picture = this.getPictureUrl(res.data.data); // 使用上传后的图片URL
+                            }
+                            let _this = this;  //右边的this是这个页面的this
+                            _this.loadTable(1);   //刷新页面
+                        } else {
+                            msg('error', res.data.msg);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('上传图片出错：', error);
+                        msg('error', '上传图片出错，请重试');
+                    });
+            },
+            //获取老人图片
+            getPictureUrl(fileName) {
+                return `../../static/uploads/${encodeURIComponent(fileName)}`;
+            },
+
+            loadImage(imageUrl) {
+                // 创建一个新的 Image 对象
+                const img = new Image();
+                // 设置图片的 URL
+                img.src = imageUrl;
+                // 添加图片到 DOM 中
+                document.body.appendChild(img);
+            }
+        }
+    })
+</script>
+</body>
+</html>

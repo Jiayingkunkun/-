@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>新闻信息</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.css" rel="stylesheet">
+    <link href="../css/basic.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">
+    <link href="../css/my.css" rel="stylesheet">
+    <link href="../css/element/index.css" rel="stylesheet">
+    <link href="../css/quill.snow.css" rel="stylesheet">
+    <style>
+        /*防止页面的变量显示中断，这段可以防止页面抖动*/
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper" v-cloak>
+    <!--头顶导航菜单-->
+    <nav class="navbar navbar-default navbar-cls-top" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">后台管理系统</a>
+        </div>
+        <div class="header-right">
+            <a href="javascript:void(0)" class="btn btn-info" @click="logout" title="退出登录">
+                <i class="fa fa-sign-out fa-2x"></i>
+            </a>
+        </div>
+        <div class="header-right">
+            <a href="accountUserInfo.html" class="btn btn-info" title="个人信息">
+                <i class="fa fa-user fa-2x"></i>
+            </a>
+        </div>
+        <div class="header-right" style="padding-top: 25px">
+            欢迎您，{{user.type}}
+        </div>
+    </nav>
+    <!--左侧导航菜单-->
+    <nav class="navbar-default navbar-side">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <a href="index.html"><i class="fa fa-dashboard"></i>系统首页</a>
+                    <a href="video.html"><i class="fa fa-video-camera"></i>监控视频</a>
+                    <a href="phycheck.html"><i class="fa fa fa-building-o"></i>体检记录</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-yelp"></i>信息展示<span class="fa arrow"></span> </a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a href="oldinfo.html"><i class="fa fa-table"></i>老人信息</a></li>
+                        <li><a href="mediinfo.html"><i class="fa fa-table"></i>服药信息</a></li>
+                        <li><a href="familyinfo.html"><i class="fa fa-table"></i>家属信息</a></li>
+                        <li><a href="illness.html"><i class="fa fa-table"></i>慢性病信息</a></li>
+                        <li><a href="notice.html"><i class="fa fa-table"></i>公告信息</a></li>
+                        <li><a class="active-menu" href="news.html"><i class="fa fa-table"></i>新闻信息</a></li>
+                        <li><a href="feedback.html"><i class="fa fa-table"></i>反馈信息</a></li>
+                        <li><a href="user.html"><i class="fa fa-table"></i>用户信息</a></li>
+                    </ul>
+                </li>
+                <li><a href="accountUserInfo.html"><i class="fa fa-user"></i>个人信息</a></li>
+                <li><a href="updatePassword.html"><i class="fa fa-unlock-alt"></i>修改密码</a></li>
+                <li><a href="javascript:void(0)" @click="logout"><i class="fa fa-power-off"></i>退出登录</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!--页面中间内容-->
+    <div id="page-wrapper">
+        <div id="page-inner">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            新闻信息列表
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <div class="nx-table-header">
+                                    <button class="btn btn-sm btn-primary" v-on:click="add()">新增</button>
+                                    <input type="text" placeholder="请输入查询内容" v-model="name" @keyup.enter="loadTable(1)">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </div>
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>新闻标题</th>
+                                        <th>图片</th> <!-- 新增的图片列 -->
+                                        <th>浏览量</th>
+                                        <th>点赞数</th>
+                                        <th>AI提取关键字</th>
+                                        <th>新闻类型</th>
+                                        <th>发布时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody v-for="obj in objs">
+                                    <tr>
+                                        <td>{{obj.id}}</td>
+                                        <td>{{obj.title}}</td>
+                                        <td>
+                                            <img v-if="obj.picture" :src="getPictureUrl(obj.picture)" style="max-width:100px; max-height: 200px; width: auto; height: auto;" />
+                                            <span v-else>暂无图片</span>
+                                        </td>
+                                        <td>{{obj.click}}</td>
+                                        <td>{{obj.likes}}</td>
+                                        <td>{{obj.keywords}}</td>
+                                        <!-- 在下拉框下面添加保存按钮 -->
+                                        <!-- 在表格中的每个新闻条目中添加下拉框 -->
+                                        <td>
+                                            <select v-model="obj.type">
+                                                <option v-for="type in newsTypes" :value="type">{{ type }}</option>
+                                            </select>
+                                            <button class="btn btn-success btn-xs" @click="saveType(obj.id, obj.type)">保存</button>
+                                        </td>
+                                        <td>{{obj.time}}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-xs" v-on:click="init(obj)">编辑</button>
+                                            <button class="btn btn-danger btn-xs" v-on:click="del(obj.id)">删除</button>
+                                            <input type="file" v-on:change="uploadImage(obj.id, $event)" accept="image/*" style="display: none;" />
+                                            <button class="btn btn-success btn-xs" @click="$event.target.previousElementSibling.click()">上传图片</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <!--翻页功能-->
+                                <ul class="pagination">
+                                    <li class="page-item" v-bind:class="{disabled:preActive}">
+                                        <a class="page-link" href="javascript:void(0)" v-on:click="loadTable(pageInfo.pageNum - 1)">上一页</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" v-if="pageInfo.pageNum > 1" href="javascript:void(0)"
+                                           v-on:click="loadTable(pageInfo.pageNum - 1)">{{pageInfo.pageNum - 1}}</a>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="javascript:void(0)">{{pageInfo.pageNum}}</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" v-if="pageInfo.hasNextPage" href="javascript:void(0)"
+                                           v-on:click="loadTable(pageInfo.pageNum - 1)">{{pageInfo.pageNum + 1}}</a>
+                                    </li>
+                                    <li class="page-item" v-bind:class="{disabled:nextActive}">
+                                        <a class="page-link" href="javascript:void(0)"
+                                           v-on:click="loadTable(pageInfo.hasNextPage?(pageInfo.pageNum + 1):pageInfo.pageNum)">下一页</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!--将模态框放出<div id="wrapper" v-cloak>外面，防止文本编辑器识别不到-->
+<!--    模态框（Model），新增的弹出页面-->
+<div class="modal" id="mod" v-cloak>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">请填写新增新闻信息</span>
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <input type="hidden" id="modal-id" name="modal-id">
+                    <div class="form-group">
+                        <div class="col-sm-3 control-label">新闻标题</div>
+                        <div class="col-sm-7">
+                            <input id="modal-title" name="modal-title" type="text" class="form-control" placeholder="请输入标题">
+                        </div>
+                    </div>
+                    <div id="editor" style="min-height: 300px"></div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button id="saveBtn" type="button" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.metisMenu.js"></script>
+<script src="../js/custom.js"></script>
+<script src="../js/my.js"></script>
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+<script src="../js/echarts.min.js"></script>
+<script src="../js/element/index.js"></script>
+<script src="../js/quill.js"></script>
+<script>
+    function msg(type,msg){
+        Vue.prototype.$message({
+            type: type,  //success(成功) ，warning (警告)，error(错误)
+            message: msg,
+            duration: 2000,
+            offset: 100,
+            center: true
+        })
+    }
+    //富文本编辑器
+    let quill = new Quill('#editor',{
+        modules: {
+            toolbar: {
+                container:[
+                    [{'header': [1,2,3,4,5,6,false]}],    //标题字体
+                    [{'font': []}],                       //默认的字体
+                    ['bold','italic','underline','strike'],   //切换字体样式（加粗、斜体、下划线、删除线）
+                    [{'align': []}],                       //字体的对齐方式
+                    ['blockquote','code-block'],           //文本块、代码块
+                    [{'color':[]},{'background':[]}],       //字体颜色和字体背景颜色
+                    ['clean'],                               //清除字体所带的格式
+                    ['image','link','video']                //图片、链接、视频
+                ]
+            }
+        },
+        theme: 'snow'
+    });
+
+    let wrapper = new Vue({
+        el:"#wrapper",
+        data:{
+            user: {},
+            name: '',  //查询的名字默认为空
+            objs: [],
+            pageInfo: {},
+            preActive: true,  //没有上一页为true，有上一页为false
+            nextActive: true,  //没有下一页为true，有下一页为false
+            entity: {
+                type: '' // 新增一个属性来存储新闻类型
+            },
+            userIsAdmin: false, // 用户是否为管理员，默认为 false
+            newsTypes: ['高血压', '慢性肾病CKD', '脑血管病（中风）', '糖尿病', '贫血', '冠心病', '心功能不全', '心律失常', '慢性阻塞性肺病（COPD）', '老年白内障', '健康生活', '健康饮食', '养生方式', '健身运动']
+        },
+
+
+        created: function(){
+            //从登录页面login.html获取登录的用户类型
+            this.user = JSON.parse(localStorage.getItem('user'));
+            if(this.user == null){
+                this.user = {}; //设置一个空对象，以防止后续访问其属性时报错
+            }
+            // 从登录页面login.html获取登录的用户信息
+            let user = JSON.parse(localStorage.getItem('user'));
+            // 检查用户类型是否为管理员
+            if (this.user && this.user.type === "管理员") {
+                this.userIsAdmin = true;
+            }
+            this.loadTable(1);     //查询第一页，在下面完善这个方法
+            // 为每个新闻条目设置默认的 type 值
+            // 确保新闻对象的type属性被正确初始化
+            this.objs.forEach(obj => {
+                // 如果当前新闻条目的 type 值不在 newsTypes 数组中，则设置为第一个选项
+                if (!this.newsTypes.includes(obj.type)) {
+                    obj.type = this.newsTypes[0];
+                }
+            });
+            // 打印日志以检查数据初始化是否正确
+            console.log("newsTypes:", this.newsTypes);
+            console.log("entity.type:", this.entity.type);
+            // 添加调试语句，打印从后端获取的第一个新闻对象
+            console.log("First news object:", this.objs.length > 0 ? this.objs[0] : "No news objects");
+        },
+
+        methods:{
+            // 保存新闻类型到数据库
+            saveType(newsId, type) {
+                // 使用 $nextTick 方法确保 obj.type 已经更新
+                this.$nextTick(() => {
+                    console.log("News ID:", newsId);
+                    console.log("Selected Type:", type);
+                    // 发送请求前确保数据存在
+                    if (newsId && type) {
+                        axios.put(`/news/saveType/${newsId}`, { type: type })
+                            .then(res => {
+                                if (res.data.code === "0") {
+                                    msg('success', '类型保存成功');
+                                    this.loadTable(1);   //刷新页面
+                                } else {
+                                    msg('error', res.data.msg);
+                                }
+                            })
+                            .catch(error => {
+                                msg('error', '保存类型出错，请重试');
+                            });
+                    } else {
+                        msg('error', '新闻ID或新闻类型缺失');
+                    }
+                });
+            },
+            getPictureUrl(fileName) {
+                return `http://localhost:8888/uploads/${encodeURIComponent(fileName)}`;
+            },
+            uploadImage(id, event) {
+                const file = event.target.files[0];
+                const formData = new FormData();
+                formData.append('image', file);
+
+                axios.post(`/news/uploadImage/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                    .then(res => {
+                        if (res.data.code === '0') {
+                            msg('success', '图片上传成功');
+                            // 更新Vue数据对象中的图片地址
+                            const newsIndex = this.objs.findIndex(obj => obj.id === id);
+                            if (newsIndex !== -1) {
+                                this.objs[newsIndex].picture = this.getPictureUrl(res.data.data); // 使用上传后的图片URL
+                            }
+                            let _this = this;  //右边的this是这个页面的this
+                            _this.loadTable(1);   //刷新页面
+                        } else {
+                            msg('error', res.data.msg);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('上传图片出错：', error);
+                        msg('error', '上传图片出错，请重试');
+                    });
+            },
+            loadImage(imageUrl) {
+                // 创建一个新的 Image 对象
+                const img = new Image();
+                // 设置图片的 URL
+                img.src = imageUrl;
+                // 添加图片到 DOM 中
+                document.body.appendChild(img);
+            },
+
+            //查询
+            loadTable(pageNum){
+                let name = this.name === '' ? 'all' : this.name;
+                axios.get("/news/page/"+name+"?pageNum="+pageNum).then(res => {
+                    if(res.data.code ==='0'){
+                        this.objs = res.data.data.list;
+                        this.pageInfo = res.data.data;
+                        this.preActive = !(this.pageInfo.hasPreviousPage);
+                        this.nextActive = !(this.pageInfo.hasNextPage);
+                    }else {
+                        msg('error',res.data.msg);
+                    }
+                });
+            },
+            //显示新增
+            add(){
+                // 手动设置entity.type的值
+                this.entity = { type: '' }; // 设置初始值
+                console.log('entity:', this.entity); // 添加调试语句，检查entity对象是否正确重置
+                $('#modal-id').val('');
+                $('#modal-title').val('');   //取消了双向绑定，使用jquery的方式
+                quill.root.innerHTML = '';   //编辑器打开的时候是清空状态
+                $('#mod').modal('show');   //显示表单
+            },
+            // 在init方法中增加调试语句，确保entity对象在编辑时被正确地初始化
+            init(o){
+                $('#modal-id').val(o.id);
+                $('#modal-title').val(o.title);
+                quill.root.innerHTML = o.content;   //获取到o的新闻内容
+                console.log('init - entity:', this.entity); // 添加调试语句，检查entity对象是否正确初始化
+                $('#mod').modal('show');   //显示表单
+            },
+            //删除新闻
+            del(id){
+                let _this = this;  //右边的this是这个页面的this
+                this.$confirm('确认删除？','系统提示',{
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    cancelButtonClass: 'btn-custom-cancel',
+                    type: 'warning'
+                }).then(function (){
+                    axios.delete("/news/" + id).then(res => {
+                        if(res.data.code === "0"){
+                            msg('success','删除成功');
+                            _this.loadTable(1);   //刷新页面
+                        }else {
+                            msg('error',res.data.msg);  //失败返回错误信息
+                        }
+                    });
+                }).catch(function (){
+                    console.log("取消成功！");
+                });
+            },
+        }
+    });
+    //将当前表单（新增或修改新闻表单）保存到数据库,不属于vue了，将save搬出,使用jQuery的方式
+    $('#saveBtn').click(function() {
+        let entity = wrapper.$data.entity; //"wrapper" 可以是指 Vue 组件中的容器、组件的实例对象
+        entity.content = quill.root.innerHTML;
+        entity.title = $('#modal-title').val(); //用jQuery的方式取值
+        entity.type = $('#modal-type').val(); // 新增这一行代码
+        // 添加调试语句，打印标题和内容
+        console.log('Title:', entity.title);
+        console.log('Content:', entity.content);
+
+        // 添加调试语句，打印 entity 对象的内容
+        console.log('Entity object:', entity);
+
+        entity.fileId = '';
+        if (!entity.title || entity.title === "") {
+            msg('error', '标题不能为空');
+            return false;
+        }
+        // 如果没有id值，就是新增功能
+        if (!$('#modal-id').val()) { // 新增
+            axios.post("/keyword", entity).then(res => {
+                if (res.data.code === "0") {
+                    msg('success', '关键字识别成功');
+                    $('#mod').modal('hide');
+                    wrapper.loadTable(1);
+
+                } else {
+                    wrapper.loadTable(1);
+                    // msg('error', res.data.msg); // 失败返回错误信息
+                }
+            }).catch(error => {
+                console.error('关键字识别请求失败：', error);
+                // msg('error', '关键字识别请求失败，请重试');
+            });
+            axios.post("/news", entity).then(res => {
+                if (res.data.code === "0") {
+                    msg('success', '添加成功');
+                    $('#mod').modal('hide');
+                    wrapper.loadTable(1);
+                } else {
+                    // msg('error', res.data.msg); // 失败返回错误信息
+                }
+            });
+        } else {
+            // 修改 entity.id 为 newsId
+            entity.newsId = $('#modal-id').val();
+            console.log('entity.newsId:', entity.newsId); // 添加调试语句，打印 entity.newsId 的值
+            axios.put("/news", entity).then(res => {
+                console.log('PUT request response:', res); // 添加调试语句，打印 PUT 请求的响应
+                if (res.data.code === "0") {
+                    msg('success', '修改成功');
+                    $('#mod').modal('hide'); // 隐藏表单
+                    wrapper.loadTable(1); // 刷新页面
+                    console.log('Sending POST request with entity:', entity); // 添加调试语句，打印即将发送的 POST 请求的实体对象
+                } else {
+                    msg('error', res.data.msg); // 失败返回错误信息
+                }
+            }).catch(error => {
+                console.error('PUT request failed:', error); // 添加调试语句，打印 PUT 请求失败的原因
+            });
+        }
+    });
+
+</script>
+</body>
+</html>

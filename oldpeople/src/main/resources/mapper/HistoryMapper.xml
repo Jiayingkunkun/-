@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javacode.mapper.HistoryMapper">
+	<select id="findByTitle" resultType="com.javacode.entity.History">
+		select * from history where 1=1
+		<if test="title !=null and title !='all' and title !=''">
+			and `title` like concat('%',#{title},'%')
+		</if>
+		order by `time` desc
+	</select>
+	<select id="findByDiseaseName" resultType="com.javacode.entity.History">
+		SELECT DISTINCT n.*
+		FROM history n
+		WHERE n.title LIKE CONCAT('%', #{diseaseName}, '%')
+	</select>
+	<!-- 根据用户ID查找历史记录 -->
+	<select id="findByUserId" resultType="com.javacode.entity.History">
+		SELECT * FROM history WHERE userid = #{userId}
+	</select>
+	<!-- HistoryMapper.xml -->
+
+	<!-- 其他 SQL 语句... -->
+
+	<!-- 获取所有新闻类型 -->
+	<select id="getAllHistoryTypes" resultType="string">
+		SELECT DISTINCT type FROM history;
+	</select>
+
+
+</mapper>

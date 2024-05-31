@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>社区独居老人健康管理系统</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.css" rel="stylesheet">
+    <link href="../css/basic.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">
+    <link href="../css/my.css" rel="stylesheet">
+    <link href="../css/element/index.css" rel="stylesheet">
+    <style>
+        /*防止页面的变量显示中断，这段可以防止页面抖动*/
+        [v-cloak]{
+            display: none;
+        }
+        .newsinfo-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            overflow: hidden; /* 添加溢出隐藏，防止图片超出容器 */
+        }
+        .newsinfo-item h3 {
+            font-size: 18px; /* 设置标题字体大小 */
+            margin-top: 0; /* 清除标题上边距 */
+            margin-bottom: 10px; /* 设置标题下边距 */
+        }
+        .newsinfo-item img {
+            max-width: 200px; /* 设置图片最大宽度 */
+            height: auto; /* 让图片高度自适应 */
+            float: left; /* 图片浮动到左侧 */
+            margin-right: 10px; /* 设置图片右边距 */
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <!-- 导航栏和侧边栏 -->
+    <nav class="navbar navbar-default navbar-cls-top" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">后台管理系统</a>
+        </div>
+        <div class="header-right">
+            <a href="javascript:void(0)" class="btn btn-info" @click="logout" title="退出登录">
+                <i class="fa fa-sign-out fa-2x"></i>
+            </a>
+        </div>
+        <div class="header-right">
+            <a href="accountUserInfo.html" class="btn btn-info" title="个人信息">
+                <i class="fa fa-user fa-2x"></i>
+            </a>
+        </div>
+        <div class="header-right" style="padding-top: 25px">
+            欢迎您，{{user.type}}
+        </div>
+    </nav>
+
+    <nav class="navbar-default navbar-side">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <a href="index.html"><i class="fa fa-dashboard"></i>系统首页</a>
+                    <a href="video.html"><i class="fa fa-video-camera"></i>监控视频</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-yelp"></i>信息展示<span class="fa arrow"></span> </a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a href="newsinfo.html"><i class="fa fa-table"></i>新闻</a></li>
+                        <li><a href="oldinfo.html"><i class="fa fa-table"></i>老人信息</a></li>
+                        <li><a href="mediinfo.html"><i class="fa fa-table"></i>服药信息</a></li>
+                        <li><a href="familyinfo.html"><i class="fa fa-table"></i>家属信息</a></li>
+                        <li><a href="notice.html"><i class="fa fa-table"></i>公告信息</a></li>
+                        <li><a class="active-menu" href="newsinfo.html"><i class="fa fa-table"></i>健康资讯</a></li>
+                        <li><a href="feedback.html"><i class="fa fa-table"></i>反馈信息</a></li>
+                        <li><a href="user.html"><i class="fa fa-table"></i>用户信息</a></li>
+                    </ul>
+                </li>
+                <li><a href="accountUserInfo.html"><i class="fa fa-user"></i>个人信息</a></li>
+                <li><a href="updatePassword.html"><i class="fa fa-unlock-alt"></i>修改密码</a></li>
+                <li><a href="javascript:void(0)" @click="logout"><i class="fa fa-power-off"></i>退出登录</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="page-wrapper">
+        <div id="newsinfo-content">
+            <!-- 显示推荐新闻 -->
+            <div class="newsinfo-item" v-for="news in newss" :key="news.id" @click="updateClickCount(news.id)">
+<!--            <div class="newsinfo-item" v-for="news in newss" :key="news.id" @click="goToDetailPage(news.id)">-->
+                <img v-if="news.picture" :src="getPictureUrl(news.picture)" alt="新闻图片">
+                <h3>{{ news.title }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 脚本 -->
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.metisMenu.js"></script>
+<script src="../js/custom.js"></script>
+<script src="../js/my.js"></script>
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+
+<script>
+    new Vue({
+        el:"#wrapper",
+        data:{
+            user: {}, // 存储用户信息
+            newss: [] // 存储新闻列表
+        },
+        created: function(){
+            // 获取用户数据并获取推荐新闻
+            this.user = JSON.parse(localStorage.getItem('user'));
+            this.fetchRecommendedNews();
+        },
+        methods:{
+            fetchRecommendedNews: function() {
+                // 获取当前用户的推荐新闻
+                axios.get(`/familyinfo/news?userId=${this.user.id}`)
+                    .then(response => {
+                        this.newss = response.data;
+                    })
+                    .catch(error => {
+                        console.error('获取推荐新闻失败：', error);
+                    });
+            },
+            getPictureUrl: function(fileName) {
+                return `http://localhost:8888/uploads/${encodeURIComponent(fileName)}`;
+            },
+            updateClickCount: function(newsId) {
+                // 更新新闻点击次数
+                axios.post(`/news/${newsId}/click`)
+                    .then(response => {
+                        // 点击次数更新成功后跳转到新闻详情页面
+                        this.goToDetailPage(newsId);
+                    })
+                    .catch(error => {
+                        console.error('更新点击次数失败：', error);
+                        // 如果更新点击次数失败，仍然跳转到新闻详情页面
+                        this.goToDetailPage(newsId);
+                    });
+            },
+            goToDetailPage: function(newsId) {
+                // 跳转到新闻详情页面
+                window.location.href = `news-detail.html?id=${newsId}`;
+            },
+        }
+    })
+</script>
+</body>
+</html>

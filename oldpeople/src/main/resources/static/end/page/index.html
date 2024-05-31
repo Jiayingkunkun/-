@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>社区独居老人健康管理系统</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.css" rel="stylesheet">
+    <link href="../css/basic.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">
+    <link href="../css/my.css" rel="stylesheet">
+    <link href="../css/element/index.css" rel="stylesheet">
+    <link href="../css/quill.snow.css" rel="stylesheet">
+    <style>
+        /*防止页面的变量显示中断，这段可以防止页面抖动*/
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <!--头顶导航菜单-->
+    <nav class="navbar navbar-default navbar-cls-top" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">后台管理系统</a>
+        </div>
+        <div class="header-right">
+            <a href="javascript:void(0)" class="btn btn-info" @click="logout" title="退出登录">
+                <i class="fa fa-sign-out fa-2x"></i>
+            </a>
+        </div>
+        <div class="header-right">
+            <a href="accountUserInfo.html" class="btn btn-info" title="个人信息">
+                <i class="fa fa-user fa-2x"></i>
+            </a>
+        </div>
+        <div class="header-right" style="padding-top: 25px">
+            欢迎您，{{user.type}}
+        </div>
+    </nav>
+
+    <!--左侧导航菜单-->
+    <nav class="navbar-default navbar-side">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <a href="index.html"><i class="fa fa-dashboard"></i>系统首页</a>
+                    <a href="video.html"><i class="fa fa-video-camera"></i>监控视频</a>
+                    <a href="phycheck.html"><i class="fa fa fa-building-o"></i>体检记录</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-yelp"></i>信息展示<span class="fa arrow"></span> </a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a href="oldinfo.html"><i class="fa fa-table"></i>老人信息</a></li>
+                        <li><a href="mediinfo.html"><i class="fa fa-table"></i>服药信息</a></li>
+                        <li><a href="familyinfo.html"><i class="fa fa-table"></i>家属信息</a></li>
+                        <li><a href="illness.html"><i class="fa fa-table"></i>慢性病信息</a></li>
+                        <li><a href="notice.html"><i class="fa fa-table"></i>公告信息</a></li>
+                        <li><a href="news.html"><i class="fa fa-table"></i>新闻信息</a></li>
+                        <li><a href="feedback.html"><i class="fa fa-table"></i>反馈信息</a></li>
+                        <li><a href="user.html"><i class="fa fa-table"></i>用户信息</a></li>
+                    </ul>
+                </li>
+                <li><a href="accountUserInfo.html"><i class="fa fa-user"></i>个人信息</a></li>
+                <li><a href="updatePassword.html"><i class="fa fa-unlock-alt"></i>修改密码</a></li>
+                <li><a href="javascript:void(0)" @click="logout"><i class="fa fa-power-off"></i>退出登录</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!--页面中间内容-->
+    <div id="page-wrapper">
+        <div id="page-inner">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="main-box mb-orange">
+                        <i class="fa fa-check-square-o"></i>
+                        <span style="margin-left: 20px;">待处理事件数量：{{totalStatus}}</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="main-box mb-cadetblue">
+                        <i class="fa fa-user"></i>
+                        <span style="margin-left: 20px;">用户总数：{{totalUser}}</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="main-box mb-olivedrab">
+                        <i class="fa fa-users"></i>
+                        <span style="margin-left: 20px;">老年人总数：{{totalOldinfo}}</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="main-box mb-pink">
+                        <i class="fa fa-user"></i>
+                        <span style="margin-left: 20px;">网格员总数：{{totalGrid}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-heading">
+                        <select @change="selectEchartsType" v-model="echartsType">
+                            <option value="pie">饼图</option>
+                            <option value="bar">柱状图</option>
+                        </select>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="left" style="width: 100%; height: 400px"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="right" style="width: 100%; height: 400px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            公告
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <div class="nx-table-header">
+                                    <input type="text" placeholder="请输入查询内容" v-model="name" @keyup.enter="loadTable(1)">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </div>
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>公告标题</th>
+                                        <th>公告内容</th>
+                                        <th>公告时间</th>
+<!--                                            <th>操作</th>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody v-for="obj in objs">
+                                    <tr>
+                                        <td>{{obj.id}}</td>
+                                        <td>{{obj.title}}</td>
+                                        <td><button class="btn btn-primary btn-xs" v-on:click="init(obj)">查看</button></td>
+                                        <td>{{obj.time}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                <!--翻页功能-->
+                                <ul class="pagination">
+                                    <li class="page-item" v-bind:class="{disabled:preActive}">
+                                        <a class="page-link" href="javascript:void(0)" v-on:click="loadTable(pageInfo.pageNum - 1)">上一页</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" v-if="pageInfo.pageNum > 1" href="javascript:void(0)"
+                                           v-on:click="loadTable(pageInfo.pageNum - 1)">{{pageInfo.pageNum - 1}}</a>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="javascript:void(0)">{{pageInfo.pageNum}}</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" v-if="pageInfo.hasNextPage" href="javascript:void(0)"
+                                           v-on:click="loadTable(pageInfo.pageNum - 1)">{{pageInfo.pageNum + 1}}</a>
+                                    </li>
+                                    <li class="page-item" v-bind:class="{disabled:nextActive}">
+                                        <a class="page-link" href="javascript:void(0)"
+                                           v-on:click="loadTable(pageInfo.hasNextPage?(pageInfo.pageNum + 1):pageInfo.pageNum)">下一页</a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 首页弹窗容器 -->
+    <div class="home-popup" v-show="showPopup">
+        <!-- 最新公告标题 -->
+        <h3>{{ latestNotice.title }}</h3>
+        <!-- 最新公告图片 -->
+        <img :src="latestNotice.imageUrl" alt="Latest Notice Image" @click="goToNoticeDetail(latestNotice.id)">
+    </div>
+</div>
+
+<!-- 模态框 -->
+<div class="modal" id="mod">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">公告</h4>
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <input type="hidden" id="modal-id" name="modal-id">
+                    <div class="form-group">
+                        <div class="col-sm-3 control-label">公告标题</div>
+                        <div class="col-sm-7">
+                            <input id="modal-title" name="modal-title" type="text" class="form-control" placeholder="请输入标题" readonly>
+                        </div>
+                    </div>
+                    <div id="editor" style="min-height: 300px" contenteditable="false">
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.metisMenu.js"></script>
+<script src="../js/custom.js"></script>
+<script src="../js/my.js"></script>
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+<script src="../js/echarts.min.js"></script>
+<script src="../js/element/index.js"></script>
+<script src="../js/quill.js"></script>
+<script>
+    function msg(type,msg){
+        Vue.prototype.$message({
+            type: type,  //success(成功) ，warning (警告)，error(错误)
+            message: msg,
+            duration: 2000,
+            offset: 100,
+            center: true
+        })
+    }
+    //富文本编辑器
+    let quill = new Quill('#editor',{
+        modules: {
+            toolbar: {
+                container:[
+
+                ]
+            }
+        },
+        theme: 'snow'
+    });
+    let wrapper = new Vue({
+        el:"#wrapper",
+        data:{
+            user: {},
+            totalUser: 0 , //用户总数
+            totalOldinfo: 0,   //老人总数
+            totalGrid: 0,      //网格员总数
+            totalStatus: 0,    //待处理事件数量
+            echartsType: 'pie',   //饼图：pie 柱状图：bar
+            echartsShowLeftArr: [],    //左侧图标数据
+            echartsShowRightArr: [],    //右侧图标数据
+            name: '',  //查询的名字默认为空
+            objs: [],
+            pageInfo: {},
+            preActive: true,  //没有上一页为true，有上一页为false
+            nextActive: true,  //没有下一页为true，有下一页为false
+            entity: { content: '' } ,// 存放公告内容
+            modalContent: '', // 初始化模态框内容
+            isModalVisible: false ,// 控制模态框显示/隐藏的状态
+            showPopup: false, // 控制首页弹窗的显示与隐藏
+            latestNotice: {} // 最新公告数据
+        },
+
+        created: function(){
+            //从登录页面login.html获取登录的用户类型
+            this.user = JSON.parse(localStorage.getItem('user'));
+            axios.get("/echarts/getTotal").then(res=>{
+                if(res.data.code === '0'){
+                    let map = res.data.data;
+                    this.totalUser = map['totalUser'];
+                    this.totalOldinfo = map['totalOldinfo'];
+                    this.totalGrid = map['totalGrid'];
+                    this.totalStatus = map['totalStatus'];
+                }
+            });
+            this.drawLine();
+            this.loadTable(1);  //查询第一页，在下面完善这个方法
+            // 从后端获取最新的公告数据
+            this.loadLatestNotice();
+        },
+        methods: {
+            // // 加载最新的公告数据
+            // loadLatestNotice() {
+            //     axios.get("/notice/latest").then(res => {
+            //         if(res.data.code === '0'){
+            //             this.latestNotice = res.data.data;
+            //             this.showPopup = true; // 显示首页弹窗
+            //         } else {
+            //             msg('error', res.data.msg);
+            //         }
+            //     });
+            // },
+            // // 跳转到公告详情页面
+            // goToNoticeDetail(noticeId) {
+            //     // 这里可以根据具体需求进行跳转操作
+            //     window.location.href = `/notice/detail/${noticeId}`;
+            // },
+            //编辑初始化
+            init(o) {
+                fetch(`/notice/${o.id}/click`, {
+                    method: 'POST'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // 成功更新点击次数，继续模态框显示逻辑
+                            $('#modal-id').val(o.id);
+                            $('#modal-title').val(o.title);
+                            quill.root.innerHTML = o.content; // 获取公告内容
+                            $('#mod').modal('show'); // 显示模态框
+                        } else {
+                            // 处理更新点击次数请求失败的情况
+                            console.error('无法更新notice表中的点击次数');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('更新点击次数时出错:', error);
+                    });
+            },
+            //查询
+            loadTable(pageNum){
+                let name = this.name === '' ? 'all' : this.name;
+                axios.get("/notice/page/"+name+"?pageNum="+pageNum).then(res => {
+                    if(res.data.code ==='0'){
+                        this.objs = res.data.data.list;
+                        this.pageInfo = res.data.data;
+                        this.preActive = !(this.pageInfo.hasPreviousPage);
+                        this.nextActive = !(this.pageInfo.hasNextPage);
+                    }else {
+                        msg('error',res.data.msg);
+                    }
+                });
+            },
+
+            selectEchartsType(){
+                let leftChart = echarts.init(document.getElementById('left'));
+                let leftOption = this.getEchartsType(this.echartsShowLeftArr,this.echartsType);
+                leftChart.setOption(leftOption,true);
+            },
+
+            //绘制图标
+            drawLine(){
+                axios.get("/echarts/get/agenumber").then(res=>{
+                    if(res.data.code === '0'){
+                        this.echartsShowLeftArr = res.data.data;
+                        if(this.echartsShowLeftArr.length){
+                            let myChart = echarts.init(document.getElementById('left'));
+                            let option = this.getEchartsType(this.echartsShowLeftArr,this.echartsType);
+                            myChart.setOption(option,true);
+                        }
+
+                    }
+                });
+            },
+            getEchartsType(echartsArr,type){
+                for(let item of echartsArr){
+                    if(item.series[0].type === type){
+                        return item;
+                    }
+                }
+            },
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>健康资讯</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* 页面样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            padding: 20px;
+            margin: 0; /* 添加此行以消除默认的 body 边距 */
+        }
+
+        .section {
+            padding: 20px 0; /* 上下留出一些空白 */
+        }
+
+        .news-container {
+            background-color: white; /* 新闻容器背景色改为白色 */
+            /*border-radius: 10px; !* 添加圆角 *!*/
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+            padding: 20px; /* 添加内边距 */
+        }
+
+        .news-item {
+            display: block; /* 块级元素，独占一行 */
+            margin-bottom: 30px; /* 增加元素间距 */
+            box-sizing: border-box; /* 盒模型设置 */
+            transition: box-shadow 0.3s; /* 添加过渡效果 */
+        }
+
+        .news-item:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
+        }
+
+        .news-item img {
+            max-width: 400px; /* 图片自适应宽度 */
+            height: auto;
+            border-radius: 5px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .news-item img:hover {
+            transform: scale(1.05); /* 缩小放大的比例 */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* 增加阴影大小 */
+        }
+
+        .news-item h3 {
+            font-size: 36px; /* 增加标题字体大小 */
+            margin-top: 0; /* 去除标题上边距 */
+            margin-bottom: 10px; /* 减少标题下边距 */
+            color: #333; /* 更改标题颜色为深灰色 */
+            padding-bottom: 10px; /* 增加标题下边距 */
+        }
+
+        .news-item p {
+            font-size: 24px; /* 增加段落字体大小 */
+            color: #555; /* 更改段落颜色为浅灰色 */
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background-color: #54a0d7; /* 导航栏背景颜色 */
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 25px 25px;
+            text-decoration: none;
+            font-size: 25px; /* 字体大小 */
+            transition: background-color 0.3s; /* 添加过渡效果 */
+        }
+
+        .navbar a:hover {
+            background-color: #555; /* 鼠标悬停时的背景颜色变为深灰色 */
+        }
+
+        .navbar a.active {
+            background-color: #0d1011; /* 当前页面的背景颜色 */
+            padding: 25px 25px;
+        }
+
+        .header-right {
+            float: right;
+            padding: 15px; /* 右侧元素的内边距 */
+        }
+
+        .header-right a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 16px; /* 上下内边距 12px，左右内边距 16px */
+            font-size: 16px; /* 字体大小 */
+        }
+
+        .header-right a:hover {
+            background-color: #1f1f1f; /* 鼠标悬停时的背景颜色变为深灰色 */
+        }
+
+        .welcome-text {
+            color: white;
+            padding: 20px; /* 欢迎文本的内边距 */
+            float: right;
+            font-size: 28px; /* 字体大小 */
+        }
+
+        .news-item h3:hover {
+            color: #3d6ea6;
+            text-decoration: underline;
+        }
+
+        .section:after {
+            content: '';
+            display: block;
+            width: 15%;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index1.html" :class="{ active: currentPage === 'index' }">用户首页</a>
+        <a href="newsinfo1.html" :class="{ active: currentPage === 'newsinfo' }">健康资讯</a>
+        <a href="oldinfo1.html" :class="{ active: currentPage === 'oldinfo' }">老人信息</a>
+        <a href="us.html" :class="{ active: currentPage === 'us' }">关于我们</a>
+        <div class="header-right">
+            <a href="javascript:void(0)" @click="logout" title="退出登录">
+                <i class="fa fa-sign-out"></i> 退出登录
+            </a>
+            <a href="accountUserInfo.html" title="个人信息">
+                <i class="fa fa-user"></i> 个人信息
+            </a>
+        </div>
+        <div class="welcome-text">
+            欢迎您，{{user.name}}
+        </div>
+    </nav>
+
+
+    <!-- 头部导航 -->
+    <div class="section elder-info" style="padding-top: 0px;padding-bottom: 50px;">
+        <div style="display: flex; justify-content: center; align-items: center; height: 200px; position: relative;">
+            <img src="1.3.jpg" alt="健康资讯照片" style="width: 100%; height: auto; position: absolute; top: 0; left: 0; z-index: -1;">
+            <h2 style="font-size: 42px; color: #424242; z-index: 1;">健康资讯</h2>
+        </div>
+    </div>
+
+    <!-- 新闻列表 -->
+    <div class="section" style="position: relative;">
+        <!-- 搜索框 -->
+        <div style="position: absolute; top: 0; right: 0; padding: 10px;">
+            <input type="text" v-model="searchQuery" placeholder="请输入新闻标题关键字" style="width: 300px; padding: 10px; font-size: 18px; border-radius: 5px; border: 1px solid #ccc;">
+            <button @click="searchNews" style="padding: 10px 20px; font-size: 18px; border-radius: 5px; background-color: #007bff; color: #fff; border: none; cursor: pointer;">搜索</button>
+        </div>
+        <div class="news-container" style="margin-top: 50px;">
+            <div class="news-item" v-for="news in newss" :key="news.id" @click="updateClickCount(user.id, news.id)" style="display: flex; align-items: flex-start; margin-top: 10px;">
+                <img v-if="news.picture" :src="getPictureUrl(news.picture)" alt="新闻图片" class="img-fluid" style="flex: 0 0 auto; margin-right: 10px;">
+                <div style="flex: 1;">
+                    <h3 style="margin-top: 0px;margin-bottom: 174px;">{{ news.title }}</h3>
+                    <div style="display: flex; align-items: center;">
+                        <span style="font-size: 25px; margin-right: 10px;">浏览量：{{ news.click }}</span>
+                        <span style="font-size: 25px;">点赞数：{{ news.likes }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<!-- JavaScript 部分 -->
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.metisMenu.js"></script>
+<script src="../js/custom.js"></script>
+<script src="../js/my.js"></script>
+<script src="../js/vue2.6.11/vue.min.js"></script>
+<script src="../js/vue2.6.11/axios.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            user: {}, // 存储用户信息
+            newss: [], // 存储新闻列表
+            currentPage: '', // 存储当前页面标识
+            searchQuery: '' // 存储搜索关键字
+        },
+        created: function() {
+            console.log('Vue 实例已创建');
+            // 获取用户数据并获取推荐新闻
+            this.user = JSON.parse(localStorage.getItem('user'));
+            this.fetchRecommendedNews();
+            // 设置 currentPage 值
+            this.setCurrentPage();
+            // 监听事件
+            window.addEventListener('reloadNewsList', () => {
+                // 重新获取新闻列表数据
+                this.fetchRecommendedNews();
+            });
+        },
+        computed: {
+            filteredNews: function() {
+                // 根据搜索关键字过滤新闻列表
+                if (this.searchQuery.trim() === '') {
+                    // 如果搜索关键字为空，则返回全部新闻
+                    return this.newss;
+                } else {
+                    // 否则，返回标题包含搜索关键字的新闻
+                    return this.newss.filter(news => news.title.includes(this.searchQuery.trim()));
+                }
+            }
+        },
+        methods: {
+            setCurrentPage: function() {
+                // 获取当前页面的 URL
+                var currentPageUrl = window.location.pathname;
+                console.log('当前页面路径:', currentPageUrl);
+                // 根据 URL 设置 currentPage 的值
+                switch (currentPageUrl) {
+                    case '/end/page/index1.html':
+                        this.currentPage = 'index';
+                        break;
+                    case '/end/page/newsinfo1.html':
+                        this.currentPage = 'newsinfo';
+                        break;
+                    case '/end/page/oldinfo1.html':
+                        this.currentPage = 'oldinfo';
+                        break;
+                    case '/end/page/us.html':
+                        this.currentPage = 'us';
+                        break;
+                    default:
+                        this.currentPage = ''; // 如果当前页面不在上述页面中，可以设置为空值或其他默认值
+                }
+                console.log('设置的 currentPage 值:', this.currentPage);
+            },
+            fetchRecommendedNews: function() {
+                // 获取当前用户的推荐新闻
+                axios.get(`/familyinfo/news?userId=${this.user.id}`)
+                    .then(response => {
+                        console.log('成功获取到新闻数据：', response.data);
+                        this.newss = response.data;
+                    })
+                    .catch(error => {
+                        console.error('获取推荐新闻失败：', error);
+                    });
+            },
+
+            getPictureUrl: function(fileName) {
+                return `http://localhost:8888/uploads/${encodeURIComponent(fileName)}`;
+            },
+            updateClickCount: function(userId, newsId) {
+                // Update the click count of the news item
+                axios.post(`/news/${newsId}/click`, { userId: userId })
+                    .then(response => {
+                        console.log('更新点击次数成功');
+                        // Once the click count is updated successfully, redirect to the news detail page
+                        this.goToDetailPage(newsId);
+                    })
+                    .catch(error => {
+                        console.error('更新点击次数失败:', error);
+                        // If updating the click count fails, still redirect to the news detail page
+                        this.goToDetailPage(newsId);
+                    });
+            },
+
+            goToDetailPage: function(newsId) {
+                // 跳转到新闻详情页面
+                window.location.href = `news-detail.html?id=${newsId}`;
+            },
+            logout: function() {
+                // 退出登录逻辑
+                // 清除用户信息并跳转到登录页面
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            },
+            searchNews: function() {
+                // 根据搜索关键字搜索新闻
+                if (this.searchQuery.trim() !== '') {
+                    axios.get(`/news/search/news?title=${this.searchQuery}`)
+                        .then(response => {
+                            this.newss = response.data;
+                        })
+                        .catch(error => {
+                            console.error('搜索新闻失败：', error);
+                        });
+                } else {
+                    // 如果搜索关键字为空，则重新获取推荐新闻
+                    this.fetchRecommendedNews();
+                }
+            },
+
+
+        }
+    })
+</script>
+</body>
+</html>

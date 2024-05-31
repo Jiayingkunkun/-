@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javacode.mapper.MediinfoMapper">
+  <resultMap id="BaseResultMap" type="com.javacode.entity.Mediinfo">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="total" jdbcType="INTEGER" property="total" />
+    <result column="method" jdbcType="VARCHAR" property="method" />
+    <result column="allowance" jdbcType="INTEGER" property="allowance" />
+    <result column="day" jdbcType="INTEGER" property="day" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+    <result column="datetime" jdbcType="TIMESTAMP" property="datetime" />
+  </resultMap>
+
+  <select id="findByName" resultType="com.javacode.entity.Mediinfo">
+    select * from mediinfo where 1=1
+    <if test="name !=null and name !='all' and name !=''">
+      and `name` like concat('%',#{name},'%')
+    </if>
+    order by `allowance`
+  </select>
+  <!-- Select all Mediinfo -->
+  <select id="findAllMediinfo" resultType="com.javacode.entity.Mediinfo">
+    SELECT * FROM mediinfo;
+  </select>
+  
+</mapper>
